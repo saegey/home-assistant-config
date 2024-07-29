@@ -1,0 +1,419 @@
+watch_lounge_apple_tv:
+  alias: watch lounge apple tv
+  sequence:
+    - service: remote.send_command
+      data:
+        entity_id: remote.lounge
+        command: PowerToggle
+        delay_secs: '1'
+        device: Epson Projector
+    - service: remote.send_command
+      data:
+        entity_id: remote.lounge
+        device: J-Tech Digital HDSP0104M
+        command: AV1
+
+watch_lounge_windows:
+  alias: watch lounge windows
+  sequence:
+    - service: remote.send_command
+      data:
+        entity_id: remote.lounge
+        command: PowerToggle
+        delay_secs: '1'
+        device: Epson Projector
+    - service: remote.send_command
+      data:
+        entity_id: remote.lounge
+        device: J-Tech Digital HDSP0104M
+        command: AV2
+
+set_alarm_home:
+  alias: set alarm to stay mode
+  sequence:
+    - service: alarm_control_panel.alarm_arm_home
+      data:
+        entity_id: alarm_control_panel.townhouse_alarm
+        code: !secret home_alarm_code
+
+set_alarm_away:
+  alias: set alarm to away mode
+  sequence:
+    - service: alarm_control_panel.alarm_arm_away
+      data:
+        entity_id: alarm_control_panel.townhouse_alarm
+        code: !secret home_alarm_code
+
+set_alarm_disarmed:
+  alias: set alarm disarmed
+  sequence:
+    - service: alarm_control_panel.alarm_disarm
+      data:
+        entity_id: alarm_control_panel.townhouse_alarm
+        code: !secret home_alarm_code
+
+set_alarm_triggered:
+  alias: trigger alarm
+  sequence:
+    - service: alarm_control_panel.alarm_trigger
+      entity_id: alarm_control_panel.townhouse_alarm
+    
+    - service: notify.family
+      data:
+        message: Alarm triggered!
+
+turn_on_all_sirens:
+  alias: turn on all alert leds alarm
+  sequence:
+    - service: homeassistant.turn_on
+      entity_id:
+        - group.sirens
+    
+    - service: notify.family
+      data:
+        message: Siren triggered!
+
+turn_off_all_sirens:
+  alias: turn off all alert leds alarm
+  sequence:
+    - service: homeassistant.turn_off
+      entity_id:
+        - group.sirens
+
+turn_on_all_alert_leds:
+  alias: turn on all alert leds
+  sequence:
+    - service: homeassistant.turn_on
+      data:
+        entity_id:
+          - group.alert_leds
+
+turn_on_all_alert_leds_alarm:
+  alias: turn on all alert leds alarm
+  sequence:
+    - service: light.turn_on
+      entity_id:
+        - group.alert_leds
+      data:
+        color_name: red
+        brightness_pct: 100
+
+turn_off_all_alert_leds:
+  alias: turn off all alert leds
+  sequence:
+  - service: homeassistant.turn_off
+    data:
+      entity_id:
+      - group.alert_leds
+  - service: light.turn_on
+    entity_id:
+    - group.alert_leds
+    data:
+      color_name: white
+  - service: light.turn_off
+    entity_id:
+    - group.alert_leds
+
+turn_off_bedroom_alert_led:
+  alias: turn off bedroom alert led
+  sequence:
+  - service: light.turn_off
+    data:
+      entity_id:
+      - light.bedroom_rgb_led
+
+restore_bedroom_alert_led:
+  alias: restore alarm bedroom alert led
+  sequence:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.townhouse_alarm
+      state: armed_away
+    - condition: state
+      entity_id: alarm_control_panel.townhouse_alarm
+      state: armed_home
+  - service: light.turn_on
+    entity_id:
+    - light.bedroom_rgb_led
+    data:
+      color_name: red
+      brightness_pct: 100
+
+turn_off_all_interior_lights:
+  alias: turn off all interior lights
+  sequence:
+  - service: homeassistant.turn_off
+    data:
+      entity_id:
+      - group.interior_lights
+
+bedroom_lights_wake_up:
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: light.bedroom_left_light
+      xy_color:
+      - 0.67
+      - 0.39
+      brightness: 1
+  - delay:
+      seconds: 1
+  - service: light.turn_on
+    data:
+      entity_id: light.bedroom_left_light
+      xy_color:
+      - 0.65
+      - 0.41
+      brightness: 85
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.bedroom_left_light
+      xy_color:
+      - 0.6
+      - 0.4
+      brightness: 170
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.bedroom_left_light
+      xy_color:
+      - 0.48
+      - 0.4
+      brightness: 255
+      transition: 600
+
+interior_lights_sunset_home:
+  alias: interior lights sunset
+  sequence:
+  - service: homeassistant.turn_on
+    data:
+      entity_id:
+      - light.second_floor_big_lamp
+      - light.lounge_wall_light
+      - light.stair_light
+
+auto_garage_door_light:
+  alias: auto garage door light
+  sequence:
+  - service: homeassistant.turn_on
+    entity_id:
+    - light.garage_light
+  - delay: 00:10:00
+  - service: homeassistant.turn_off
+    entity_id:
+    - light.garage_light
+
+night_lights_not_home:
+  alias: night ligths not home
+  sequence:
+  - service: homeassistant.turn_on
+    data:
+      entity_id:
+      - light.hallway_light
+      - light.cilinder_light
+
+turn_off_all_media_players:
+  alias: turn off all media players
+  sequence:
+  - service: media_player.media_stop
+    data:
+      entity_id:
+      - media_player.gym_echo_dot
+      - media_player.kitchen
+      - media_player.kitchen_sonos_alexa
+      - media_player.living_room
+      - media_player.lounge_echo
+      - media_player.bedroom_echo
+
+media_player_cooking_mode:
+  alias: media player cooking mode
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.kitchen
+      volume_level: '0.4'
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.living_room
+      volume_level: '0.4'
+  - service: media_player.play_media
+    data:
+      entity_id: media_player.kitchen_sonos_alexa
+      media_content_type: TUNEIN
+      media_content_id: Soma FM Space Station Soma
+
+media_player_leave_home:
+  alias: media player leave home
+  sequence:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.gym_echo_dot
+        volume_level: '0.4'
+    
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gym_echo_dot
+        media_content_type: TUNEIN
+        media_content_id: Soma FM Space Station Soma
+    
+    - service: media_player.media_pause
+      entity_id:
+      - media_player.kitchen
+
+interior_lights_sunset_not_home:
+  alias: interior lights sunset
+  sequence:
+    - service: script.turn_on
+      entity_id:
+      - script.leave_home_nighttime
+
+interior_midnight:
+  alias: interior midnight
+  sequence:
+    - service: script.turn_on
+      entity_id:
+        - script.turn_off_all_media_players
+    
+    - service: script.turn_on
+      entity_id:
+        - script.turn_off_all_interior_lights
+    
+    - service: input_boolean.turn_off
+      entity_id:
+        - input_boolean.bedroom_oled
+    
+    - service: notify.family
+      data:
+        message: Interior midnight activated
+
+midnight:
+  alias: midnight
+  sequence:
+    - service: script.set_alarm_home
+    - service: script.turn_off_bedroom_alert_led
+    - service: script.interior_midnight
+
+wake_up:
+  alias: wake up
+  sequence:
+    - service: script.turn_on
+      entity_id:
+      - script.bedroom_lights_wake_up
+    
+    - service: input_boolean.turn_on
+      entity_id:
+      - input_boolean.bedroom_oled
+    
+    - service: script.turn_on
+      entity_id:
+      - script.restore_bedroom_alert_led
+    
+    - service: notify.family
+      data:
+        message: Interior wake up activated
+
+arrive_home_daytime:
+  alias: arrive home daytime
+  sequence:
+    - service: script.set_alarm_disarmed
+    - service: media_player.media_pause
+      entity_id:
+      - media_player.gym_echo_dot
+
+arrive_home_nighttime:
+  alias: arrive home nighttime
+  sequence:
+    - service: script.set_alarm_disarmed
+    - service: media_player.media_pause
+      entity_id:
+      - media_player.gym_echo_dot
+    
+    - service: homeassistant.turn_on
+      data:
+        entity_id:
+        - light.foyer_light
+        - light.hallway_light
+        - light.stair_light
+    
+    - service: notify.family
+      data:
+        message: Arrive home nighttime triggered
+
+leave_home_daytime:
+  alias: leave home daytime
+  sequence:
+    - service: script.set_alarm_away
+    - service: script.turn_off_all_interior_lights
+    - service: notify.family
+      data:
+        message: Leave home day time triggered
+
+leave_home_nighttime:
+  alias: leave home nighttime
+  sequence:
+    - service: script.set_alarm_away
+    - service: script.turn_off_all_interior_lights
+    - service: script.night_lights_not_home
+    - service: notify.family
+      data:
+        message: Leave home nighttime triggered
+
+lounge_dim_lights:
+  alias: dim lounge lights
+  sequence:
+    - service: homeassistant.turn_on
+      data:
+        entity_id:
+        - light.lounge_left_light
+        - light.lounge_right_light
+        brightness_pct: 80
+        transition: 3
+
+lounge_off_lights:
+  alias: off lounge lights
+  sequence:
+    - service: homeassistant.turn_off
+      data:
+        entity_id:
+        - light.lounge_left_light
+        - light.lounge_right_light
+        transition: 3
+
+announce_message:
+  alias: announce message
+  description: 'announces message on media players'
+  fields:
+    message:
+      description: message to announce
+      example: Door is open
+  sequence:
+    - condition: state
+      entity_id: input_boolean.alarm_chime
+      state: 'on'
+    
+    # - service: notify.alexa_media
+    #   data:
+    #     data:
+    #       type: announce
+    #     target:
+    #     - media_player.bedroom_echo
+    #     - media_player.lounge_echo
+    #     - media_player.gym_echo_dot
+    #     - media_player.kitchen_sonos_alexa
+    #   data_template:
+    #     message: "{{ message }}"
+    
+    # - service: notify.alexa_media
+    #   data:
+    #     target:
+    #     - media_player.kitchen_sonos_alexa
+    #     data:
+    #       type: tts
+    #   data_template:
+    #     message: "{{ message }}"

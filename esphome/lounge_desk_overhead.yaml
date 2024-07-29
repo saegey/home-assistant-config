@@ -1,0 +1,30 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: lounge_desk_overhead
+  platform: ESP8266
+  board: esp8285
+
+<<: !include components/core.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: True
+    name: "lounge desk overhead manual switch"
+    on_press:
+      - switch.toggle: relay
+
+switch:
+  - platform: gpio
+    name: "Lounge Desk Overhead Lights"
+    pin: GPIO12
+    id: relay
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes

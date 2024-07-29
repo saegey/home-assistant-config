@@ -1,0 +1,26 @@
+# .gitignore file for home assistant config dir (/config)
+# By default, everything will be ignored
+*
+
+# Don't ignore these files
+!*.yaml
+!.gitignore
+!*.md
+!automation/
+!scripts/
+!esphome/
+!esphome/components
+
+._*
+
+# Ignore folders
+.storage
+.cloud
+.google.token
+
+# Ignore secret data/credentials files
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
+googlecloud.json
+

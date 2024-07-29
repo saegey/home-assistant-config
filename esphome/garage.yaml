@@ -1,0 +1,70 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: garage
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include components/core.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: D2
+      mode: INPUT_PULLUP
+      inverted: False
+    name: "Garage Overhead Door Sensor"
+    device_class: garage_door
+
+  - platform: gpio
+    pin:
+      number: D3
+      mode: INPUT_PULLUP
+      inverted: True
+    name: "Garage Door Wall Switch"
+
+sensor:
+  - platform: dht
+    pin: D1
+    temperature:
+      name: "Garage Temperature"
+    humidity:
+      name: "Garage Humidity"
+    update_interval: 60s
+    model: DHT22
+    
+  - platform: uptime
+    name: "Garage Uptime"
+    
+  - platform: wifi_signal
+    name: "Garage WiFi Signal"
+    update_interval: 60s
+
+switch:
+  - platform: gpio
+    # name: "Garage Door Relay Switch"
+    id: garageDoorRelaySwitch
+    pin:
+      number: D5
+      inverted: False
+    restore_mode: ALWAYS_OFF
+
+  - platform: template
+    name: "Garage Door Relay Switch"
+    icon: "mdi:garage"
+    turn_on_action:
+      - switch.turn_on: garageDoorRelaySwitch
+      - delay: 1s
+      - switch.turn_off: garageDoorRelaySwitch
+
+  - platform: gpio
+    name: "Garage Siren Relay Switch"
+    # id: garageSirenRelaySwitch
+    pin:
+      number: D7
+      inverted: False
+    restore_mode: ALWAYS_OFF
+    
+  - platform: restart
+    name: "Garage Restart"

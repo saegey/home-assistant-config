@@ -1,0 +1,92 @@
+ring_doorbell:
+  alias: door bell was rang
+  sequence:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.front_door
+      filename: /config/www/doorbell1.jpg
+  - service: notify.family
+    data:
+      data:
+        attachment:
+          url: http://192.168.2.21:8123/local/doorbell1.jpg
+          content-type: jpeg
+          hide-thumbnail: false
+        push:
+          sound: US-EN-Daisy-Front-Door-Motion.wav
+      message: Someone rang doorbell
+  - service: script.announce_message
+    data:
+      message: The front door bell was just rang
+  - delay:
+      seconds: 10
+play_kexp_in_lounge:
+  alias: Play KEXP in Lounge
+  sequence:
+  - service: mass.play_media
+    metadata: {}
+    data:
+      media_id: KEXP
+      media_type: radio
+    target:
+      entity_id: media_player.2nd_floor
+  description: ''
+play_hermanos_gutierrez_essentials_in_lounge:
+  alias: Play Hermanos Gutierrez Essentials in Lounge
+  sequence:
+  - service: mass.play_media
+    metadata: {}
+    data:
+      media_id: Hermanos Gutiérrez Essentials
+      media_type: playlist
+    target:
+      entity_id: media_player.2nd_floor
+  description: ''
+play_groove_salad_in_lounge:
+  alias: Play Groove salad in Lounge
+  sequence:
+  - service: mass.play_media
+    metadata: {}
+    data:
+      media_id: Groove Salad
+      media_type: radio
+    target:
+      entity_id: media_player.2nd_floor
+  description: ''
+set_usercode_example:
+  alias: Set usercode example
+  sequence:
+  - service: zwave_js.set_lock_usercode
+    metadata: {}
+    data:
+      code_slot: '2'
+      usercode: '4212483'
+    target:
+      entity_id: lock.front_door_deadbolt_lock
+  description: ''
+nfc_tag_toggle_garage_alarm:
+  alias: NFC Tag - Toggle garage alarm
+  sequence:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: alarm_control_panel.garage
+        state: armed_home
+      sequence:
+      - service: alarm_control_panel.alarm_disarm
+        metadata: {}
+        data:
+          code: '2483'
+        target:
+          entity_id: alarm_control_panel.garage
+    - conditions:
+      - condition: state
+        entity_id: alarm_control_panel.garage
+        state: disarmed
+      sequence:
+      - service: alarm_control_panel.alarm_arm_home
+        metadata: {}
+        data: {}
+        target:
+          entity_id: alarm_control_panel.garage
+  description: ''

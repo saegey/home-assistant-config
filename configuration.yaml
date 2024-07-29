@@ -1,0 +1,461 @@
+scene: !include scenes.yaml
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+homeassistant:
+  customize: !include customize.yaml
+
+cloud:
+
+logger:
+  default: info
+  logs:
+    homeassistant.components.conversation: debug
+    homeassistant.components.intent: debug
+
+default_config:
+
+conversation:
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+influxdb:
+  host: a0d7b954-influxdb
+  port: 8086
+  database: homeassistant
+  username: homeassistant
+  password: !secret influxdb_password
+  max_retries: 3
+  default_measurement: state
+
+device_tracker:
+  - platform: bluetooth_le_tracker
+    track_new_devices: false
+    track_battery: true
+    track_battery_interval: 3600
+
+mqtt:
+  sensor:
+    - state_topic: "picoreplayer/cpu/temperature"
+      name: "PiCorePlayer CPU Temperature"
+      unit_of_measurement: "°C"
+      unique_id: picoreplayer_cpu_temp
+
+    - state_topic: "picoreplayer/cpu/usage"
+      name: "PiCorePlayer CPU Usage"
+      unit_of_measurement: "%"
+      value_template: "{{ value | float }}"
+      unique_id: picoreplayer_cpu_usage
+
+    - state_topic: "picoreplayer/memory/usage"
+      name: "PiCorePlayer Memory Usage"
+      unit_of_measurement: "%"
+      unique_id: picoreplayer_mem_usage
+
+    - state_topic: "pinas/cpu/temperature"
+      name: "PiNas CPU Temperature"
+      unit_of_measurement: "°C"
+      unique_id: pinas_cpu_temp
+
+    - state_topic: "pinas/cpu/usage"
+      name: "PiNas CPU Usage"
+      unit_of_measurement: "%"
+      value_template: "{{ value | float }}"
+      unique_id: pinas_cpu_usage
+
+    - state_topic: "pinas/memory/usage"
+      name: "PiNas Memory Usage"
+      unit_of_measurement: "%"
+      unique_id: pinas_mem_usage
+
+    - state_topic: "pinas/disk/usage"
+      name: "PiNas Disk Usage"
+      unit_of_measurement: "%"
+      value_template: "{{ value | float }}"
+      unique_id: pinas_disk_usage
+
+    - state_topic: "pinas/disk-usb/usage"
+      name: "PiNas USB Disk Usage"
+      unit_of_measurement: "%"
+      value_template: "{{ value | float }}"
+      unique_id: pinas_usb-disk_usage
+
+konnected:
+  access_token: supas3cur3
+  api_host: http://192.168.2.91:8123
+  devices:
+    # Alarm Panel
+    - id: 98f4abb25e12
+      host: 192.168.2.77
+      port: 19689
+      discovery: false
+      binary_sensors:
+        - zone: 1
+          type: door
+          name: "Front Exterior Door"
+        - zone: 2
+          type: door
+          name: "Rear Exterior Door"
+        - zone: 3
+          type: door
+          name: "Garage Interior Door"
+        - zone: 4
+          type: motion
+          name: "2nd Motion Detector"
+        - zone: 5
+          type: door
+          name: "Second Floor Rear Door"
+        - zone: 6
+          type: door
+          name: "Master Bedroom Door"
+      switches:
+        - zone: out
+          name: Siren
+
+cover:
+  - platform: template
+    covers:
+      garage_door:
+        unique_id: garage_door
+        friendly_name: "Garage Door"
+        value_template: "{{ states('binary_sensor.garage_overhead_door_sensor') == 'on' }}"
+        open_cover:
+          service: switch.turn_on
+          entity_id: switch.garage_door_relay_switch
+        close_cover:
+          service: switch.turn_on
+          entity_id: switch.garage_door_relay_switch
+        stop_cover:
+          service: switch.turn_on
+          entity_id: switch.garage_door_relay_switch
+
+http:
+
+# Enables configuration UI
+config:
+
+history:
+
+logbook:
+  exclude:
+    domains:
+      - media_player
+    entities: sensor.time
+
+sun:
+
+hassio:
+
+mobile_app:
+
+system_health:
+
+notify:
+  - name: family
+    platform: group
+    unique_id: notify_family
+    services:
+      - service: mobile_app_scarlett_iphone
+      - service: mobile_app_adams_iphone
+
+fan:
+  - platform: template
+    fans:
+      2nd_floor_heat_fan:
+        unique_id: 2nd_floor_heat_fan
+        friendly_name: 2nd Floor Heat Fan
+        value_template: "{{ is_state('light.2nd_floor_fan_light', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          target:
+            entity_id: light.2nd_floor_fan_light
+        turn_off:
+          service: light.turn_off
+          target:
+            entity_id: light.2nd_floor_fan_light
+
+      foyer_heat_fan:
+        unique_id: foyer_heat_fan
+        friendly_name: Foyer Heat Fan
+        value_template: "{{ is_state('light.foyer_heat_fan_switch_light', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          target:
+            entity_id: light.foyer_heat_fan_switch_light
+        turn_off:
+          service: light.turn_off
+          target:
+            entity_id: light.foyer_heat_fan_switch_light
+
+      gym_heat_fan:
+        unique_id: gym_heat_fan
+        friendly_name: Gym Heat Fan
+        value_template: "{{ is_state('light.gym_wall_heater_switch_light', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          target:
+            entity_id: light.gym_wall_heater_switch_light
+        turn_off:
+          service: light.turn_off
+          target:
+            entity_id: light.gym_wall_heater_switch_light
+
+      lounge_heat_fan:
+        unique_id: lounge_heat_fan
+        friendly_name: Lounge Heat Fan
+        value_template: "{{ is_state('light.lounge_heat_fan_switch_light', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          target:
+            entity_id: light.lounge_heat_fan_switch_light
+        turn_off:
+          service: light.turn_off
+          target:
+            entity_id: light.lounge_heat_fan_switch_light
+
+      bedroom_heat_fan:
+        unique_id: bedroom_heat_fan
+        friendly_name: Bedroom Heat Fan
+        value_template: "{{ is_state('light.bedroom_heater_fan_switch_light', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          target:
+            entity_id: light.bedroom_heater_fan_switch_light
+        turn_off:
+          service: light.turn_off
+          target:
+            entity_id: light.bedroom_heater_fan_switch_light
+
+powercalc:
+
+sensor:
+  - platform: noaa_tides
+    station_id: 9447130
+
+  - platform: history_stats
+    unique_id: projector_on
+    name: Projector On
+    entity_id: media_player.epson
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: time_boiler_on_today
+    name: Time Boiler On On Today
+    entity_id: binary_sensor.boiler
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: time_heat_switch
+    name: Time Heat On
+    entity_id: switch.boiler_heat_switch_switch
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: daily_heat_time
+    name: Daily Heat Time
+    entity_id: binary_sensor.boiler_heat_state
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: lounge_bathroom_fan_runtime
+    name: Lounge Bathroom Fan Runtime
+    entity_id: fan.lounge_bathroom_fan
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: master_bathroom_fan_runtime
+    name: Master Bathrooom Fan Runtime
+    entity_id: fan.bedroom_bathroom_fan_switch
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: adam_time_at_home
+    name: Adam Time at Home
+    entity_id: person.adam
+    state: "home"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: scarlett_time_at_home
+    name: Scarlett Time at Home
+    entity_id: person.scarlett
+    state: "home"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: living_room_music_on
+    name: Living Room Music Playing
+    entity_id: media_player.2nd_floor_linkplay
+    state: "playing"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    unique_id: lounge_music_on
+    name: Lounge Music Playing
+    entity_id: media_player.lounge_room_sonos
+    state: "playing"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+
+  - platform: influxdb
+    api_version: 1
+    host: localhost # IP address or hostname of your InfluxDB server
+    port: 8086 # Port number of your InfluxDB instance
+    database: telegraf # Name of the InfluxDB database
+    username: telegraf # Username for InfluxDB (if required)
+    password: Vashon2012 # Password for InfluxDB (if required)
+    queries:
+      - name: "diet pi cpu usage"
+        unique_id: diet_pi_cpu_usage
+        unit_of_measurement: "%"
+        measurement: '"telegraf"."autogen"."cpu"'
+        value_template: "{{ value | round(1) }}"
+        group_function: last
+        where: >
+          "host" = 'DietPi'
+          AND "cpu" = 'cpu-total'
+        field: usage_user
+      - name: "diet pi2 cpu usage"
+        unique_id: diet_pi2_cpu_usage
+        unit_of_measurement: "%"
+        measurement: '"telegraf"."autogen"."cpu"'
+        value_template: "{{ value | round(1) }}"
+        group_function: last
+        where: >
+          "host" = 'DietPi2'
+          AND "cpu" = 'cpu-total'
+        field: usage_user
+      - name: "diet pi Memory Usage"
+        unique_id: diet_pi_mem
+        unit_of_measurement: "B"
+        measurement: '"telegraf"."autogen"."mem"'
+        value_template: "{{ value | round(1) }}"
+        group_function: last
+        where: >
+          "host" = 'DietPi'
+        field: used
+      - name: "diet pi2 Memory Usage"
+        unique_id: diet_pi2_mem
+        unit_of_measurement: "B"
+        measurement: '"telegraf"."autogen"."mem"'
+        value_template: "{{ value | round(1) }}"
+        group_function: last
+        where: >
+          "host" = 'DietPi2'
+        field: used
+      - name: "diet pi network in"
+        unique_id: diet_pi_net_in
+        unit_of_measurement: "B/s"
+        measurement: '"telegraf"."autogen"."net_rate"'
+        value_template: "{{ value | int }}"
+        group_function: last
+        where: >
+          "interface" = 'eth0'
+        field: bytes_recv_per_sec
+      - name: "diet pi network out"
+        unique_id: diet_pi_net_out
+        unit_of_measurement: "B/s"
+        measurement: '"telegraf"."autogen"."net_rate"'
+        value_template: "{{ value | int }}"
+        group_function: last
+        where: >
+          "interface" = 'eth0'
+        field: bytes_sent_per_sec
+      - name: "diet pi2 network in"
+        unique_id: diet_pi2_net_in
+        unit_of_measurement: "B/s"
+        measurement: '"telegraf"."autogen"."net_rate_dietpi2"'
+        value_template: "{{ value | int }}"
+        group_function: last
+        where: >
+          "interface" = 'wlan0'
+        field: bytes_recv_per_sec
+      - name: "diet pi2 network out"
+        unique_id: diet_pi2_net_out
+        unit_of_measurement: "B/s"
+        measurement: '"telegraf"."autogen"."net_rate"'
+        value_template: "{{ value | int }}"
+        group_function: last
+        where: >
+          "interface" = 'wlan0'
+        field: bytes_sent_per_sec
+
+climate:
+  - platform: generic_thermostat
+    unique_id: main_thermostat
+    name: Main Thermostat
+    heater: switch.boiler_heat_switch_switch
+    target_sensor: sensor.thermostat_temp_sensor
+    min_temp: 50
+    max_temp: 78
+    min_cycle_duration:
+      minutes: 20
+    cold_tolerance: 1
+    hot_tolerance: 1
+    initial_hvac_mode: heat
+    away_temp: 69
+    home_temp: 70
+    sleep_temp: 68
+
+binary_sensor:
+  - platform: template
+    sensors:
+      someone_home:
+        unique_id: someone_home
+        friendly_name: Someone Home
+        icon_template: >-
+          {% if is_state('binary_sensor.someone_home','on') %} mdi:home-account
+          {% else %} mdi:home-outline
+          {% endif %}
+        value_template: "{{ is_state('person.adam','home') or  is_state('person.scarlett','home') }}"
+
+recorder:
+  db_url: !secret mariadb_connection_string
+  purge_keep_days: 30
+
+# media_player:
+#   - platform: linkplay
+#     host: 192.168.2.163
+#     name: 2nd Floor Linkplay
+#     protocol: https
+
+rest_command:
+  # linein:
+  #   url: https://192.168.2.163/httpapi.asp?command=setPlayerCmd:switchmode:line-in
+  #   verify_ssl: false
+  # wifi:
+  #   url: https://192.168.2.163/httpapi.asp?command=setPlayerCmd:switchmode:wifi
+  #   verify_ssl: false
+
+command_line:
+  - switch:
+      name: aeotec_zstick_disco_light
+      command_on: 'echo -e -n "\x01\x08\x00\xF2\x51\x01\x01\x05\x01\x50" > /dev/serial/by-id/usb-0658_0200-if00'
+      command_off: 'echo -e -n "\x01\x08\x00\xF2\x51\x01\x00\x05\x01\x51" > /dev/serial/by-id/usb-0658_0200-if00'

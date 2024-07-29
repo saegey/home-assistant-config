@@ -1,0 +1,43 @@
+light.foyer_light:
+  icon: mdi:ceiling-light
+light.exterior_front_light:
+  icon: mdi:outdoor-lamp
+light.exterior_rear_light:
+  icon: mdi:outdoor-lamp
+switch.entryway_closet_ceiling_light:
+  icon: mdi:ceiling-light
+light.living_room_floor_lamp:
+  icon: mdi:floor-lamp
+light.dining_ceiling_light:
+  icon: mdi:ceiling-light
+light.kitchen_ceiling_light:
+  icon: mdi:ceiling-light
+light.cilinder_light:
+  icon: mdi:lamp
+group.motion_sensors:
+  icon: mdi:motion-sensor
+person.adam:
+  entity_picture: /local/adam.jpg
+person.scarlett:
+  entity_picture: /local/scarlett.jpg
+sensor.inside_temperature:
+  icon: mdi:thermometer
+sensor.inside_humidity:
+  icon: mdi:water-percent
+sensor.inside_illuminance:
+  icon: mdi:white-balance-sunny
+sensor.hass_db_size:
+  icon: mdi:database
+  name: DB Size
+sensor.uptime:
+  icon: mdi:home-assistant
+  name: Hass.io Uptime
+sensor.internet_download:
+  icon: mdi:download
+sensor.internet_upload:
+  icon: mdi:upload
+sensor.usg_wan_in:
+  friendly_name: USG WAN in
+  unit_of_measurement: bytes
+sensor.usg_wan_out:
+  unit_of_measurement: bytes

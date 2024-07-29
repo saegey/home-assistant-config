@@ -1,0 +1,45 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: kitchen
+  platform: ESP8266
+  board: d1_mini
+
+<<: !include components/core.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin: D5
+    name: "Kitchen Motion Sensor"
+    device_class: motion
+
+sensor:
+  - platform: wifi_signal
+    name: "Kitchen WiFi Signal"
+    update_interval: 60s
+    
+  - platform: uptime
+    name: "Kitchen Uptime"
+    
+switch:
+  - platform: restart
+    name: "Kitchen Restart"
+    
+light:
+  - platform: rgb
+    name: "Kitchen RGB Led"
+    red: output_component_red
+    green: output_component_green
+    blue: output_component_blue
+
+output:
+  - platform: esp8266_pwm
+    id: output_component_red
+    pin: D6
+  - platform: esp8266_pwm
+    id: output_component_green
+    pin: D7
+  - platform: esp8266_pwm
+    id: output_component_blue
+    pin: D8

@@ -1,0 +1,58 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: foyer
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include components/core.yaml
+
+light:
+  - platform: rgb
+    name: "Foyer RGB Led"
+    red: output_component_red
+    green: output_component_green
+    blue: output_component_blue
+    restore_mode: ALWAYS_OFF
+
+switch:
+  - platform: restart
+    name: "Foyer Restart"
+
+sensor:
+  - platform: dht
+    pin: D3
+    temperature:
+      name: "Foyer Temperature"
+      id: foyer_temperature
+    humidity:
+      name: "Foyer Humidity"
+      id: foyer_humidity
+    update_interval: 60s
+    model: DHT22
+
+  - platform: uptime
+    name: "Foyer Uptime"
+
+  - platform: wifi_signal
+    name: "Foyer WiFi Signal"
+    update_interval: 60s
+
+output:
+  - platform: esp8266_pwm
+    id: output_component_red
+    pin: D6
+  - platform: esp8266_pwm
+    id: output_component_green
+    pin: D7
+  - platform: esp8266_pwm
+    id: output_component_blue
+    pin: D8
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: D5
+    name: "Foyer Motion Sensor"
+    device_class: motion

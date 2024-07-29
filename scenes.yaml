@@ -1,0 +1,1204 @@
+- id: lounge_off
+  name: Lounge Off
+  entities:
+    light.lounge_left_light:
+      friendly_name: Lounge Left Light
+      icon: hass:globe-light
+      supported_features: 185
+      state: 'off'
+    light.lounge_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      friendly_name: Lounge Right Light
+      icon: hass:globe-light
+      supported_features: 43
+      state: 'off'
+    light.lounge_wall_light:
+      friendly_name: Lounge Wall Light
+      icon: hass:coach-lamp
+      supported_features: 0
+      state: 'off'
+    switch.lounge_desk_overhead_lights:
+      friendly_name: Lounge Desk Overhead Lights
+      icon: ''
+      state: 'off'
+    zwave.lounge_salt_lamp:
+      node_id: 14
+      node_name: Linear (Nortek Security Control LLC) PS15Z-2 Plug-in Appliance Module
+      manufacturer_name: Linear (Nortek Security Control LLC)
+      product_name: PS15Z-2 Plug-in Appliance Module
+      query_stage: Complete
+      is_awake: true
+      is_ready: true
+      is_failed: false
+      is_info_received: true
+      max_baud_rate: 40000
+      is_zwave_plus: false
+      capabilities:
+      - routing
+      - beaming
+      - listening
+      neighbors:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 15
+      - 16
+      sentCnt: 26
+      sentFailed: 0
+      retries: 0
+      receivedCnt: 14
+      receivedDups: 0
+      receivedUnsolicited: 0
+      sentTS: '2021-03-02 13:48:07:970 '
+      receivedTS: '2021-03-02 13:48:08:075 '
+      lastRequestRTT: 56
+      averageRequestRTT: 54
+      lastResponseRTT: 105
+      averageResponseRTT: 104
+      application_version: '5.41'
+      friendly_name: Lounge Salt Lamp
+      state: ready
+    switch.lounge_salt_lamp:
+      node_id: 14
+      value_index: 0
+      value_instance: 1
+      value_id: '72057594277609472'
+      friendly_name: Lounge Salt Lamp
+      state: 'off'
+  icon: mdi:power-plug-off
+- id: lounge_day
+  name: Lounge Day
+  entities:
+    light.lounge_left_light:
+      brightness: 127
+      hs_color:
+      - 44.757
+      - 72.549
+      rgb_color:
+      - 255
+      - 208
+      - 70
+      xy_color:
+      - 0.487
+      - 0.447
+      white_value: 167
+      friendly_name: Lounge Left Light
+      icon: hass:globe-light
+      supported_features: 185
+      state: 'on'
+    light.lounge_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 180
+      color_temp: 330
+      friendly_name: Lounge Right Light
+      icon: hass:globe-light
+      supported_features: 43
+      state: 'on'
+    light.lounge_wall_light:
+      friendly_name: Lounge Wall Light
+      icon: hass:coach-lamp
+      supported_features: 0
+      state: 'on'
+    switch.lounge_desk_overhead_lights:
+      friendly_name: Lounge Desk Overhead Lights
+      icon: ''
+      state: 'on'
+    zwave.lounge_salt_lamp:
+      node_id: 14
+      node_name: Linear (Nortek Security Control LLC) PS15Z-2 Plug-in Appliance Module
+      manufacturer_name: Linear (Nortek Security Control LLC)
+      product_name: PS15Z-2 Plug-in Appliance Module
+      query_stage: Complete
+      is_awake: true
+      is_ready: true
+      is_failed: false
+      is_info_received: true
+      max_baud_rate: 40000
+      is_zwave_plus: false
+      capabilities:
+      - routing
+      - beaming
+      - listening
+      neighbors:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 15
+      - 16
+      sentCnt: 8
+      sentFailed: 0
+      retries: 0
+      receivedCnt: 5
+      receivedDups: 0
+      receivedUnsolicited: 0
+      sentTS: '2021-03-02 13:44:52:983 '
+      receivedTS: '2021-03-02 13:44:53:088 '
+      lastRequestRTT: 56
+      averageRequestRTT: 68
+      lastResponseRTT: 106
+      averageResponseRTT: 135
+      application_version: '5.41'
+      friendly_name: Lounge Salt Lamp
+      state: ready
+    switch.lounge_salt_lamp:
+      node_id: 14
+      value_index: 0
+      value_instance: 1
+      value_id: '72057594277609472'
+      friendly_name: Lounge Salt Lamp
+      state: 'on'
+  icon: mdi:weather-sunny
+- id: lounge_relax
+  name: Lounge Relax
+  entities:
+    light.lounge_left_light:
+      brightness: 235
+      hs_color:
+      - 29.838
+      - 72.549
+      rgb_color:
+      - 255
+      - 162
+      - 70
+      xy_color:
+      - 0.543
+      - 0.393
+      white_value: 174
+      friendly_name: Lounge Left Light
+      icon: hass:globe-light
+      supported_features: 185
+      state: 'on'
+    light.lounge_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 154
+      color_temp: 324
+      friendly_name: Lounge Right Light
+      icon: hass:globe-light
+      supported_features: 43
+      state: 'on'
+    light.lounge_wall_light:
+      friendly_name: Lounge Wall Light
+      icon: hass:coach-lamp
+      supported_features: 0
+      state: 'off'
+  icon: mdi:meditation
+- id: lounge_work
+  name: Lounge Work
+  entities:
+    light.lounge_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 255
+      color_temp: 251
+      friendly_name: Lounge Right Light
+      icon: hass:globe-light
+      supported_features: 43
+      state: 'on'
+    light.lounge_wall_light:
+      friendly_name: Lounge Wall Light
+      icon: hass:coach-lamp
+      supported_features: 0
+      state: 'on'
+    light.lounge_desk_overhead_lights:
+      friendly_name: Desk
+      icon: hass:desk-lamp
+      supported_features: 0
+      state: 'on'
+    light.lounge_left_light:
+      brightness: 255
+      hs_color:
+      - 44.384
+      - 28.627
+      rgb_color:
+      - 255
+      - 236
+      - 182
+      xy_color:
+      - 0.385
+      - 0.384
+      white_value: 181
+      friendly_name: Lounge Left Light
+      icon: hass:globe-light
+      supported_features: 185
+      state: 'on'
+- id: lounge_tv
+  name: Lounge Movie
+  entities:
+    light.lounge_left_light:
+      brightness: 131
+      hs_color:
+      - 29.412
+      - 100
+      rgb_color:
+      - 255
+      - 125
+      - 0
+      xy_color:
+      - 0.615
+      - 0.372
+      white_value: 46
+      friendly_name: Lounge Left Light
+      supported_features: 185
+      state: 'on'
+    light.lounge_overhead_lights:
+      friendly_name: Lounge Desk Overhead Lights
+      supported_features: 1
+      state: 'off'
+    light.lounge_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 70
+      color_temp: 454
+      friendly_name: Lounge Right Light
+      supported_features: 43
+      state: 'on'
+    light.lounge_wall_light:
+      friendly_name: Lounge Wall Light
+      supported_features: 1
+      state: 'off'
+    switch.lounge_desk_overhead_lights:
+      friendly_name: Lounge Desk Overhead Lights
+      icon: ''
+      state: 'off'
+- id: lounge_chill
+  name: Lounge Chill
+  entities:
+    light.lounge_left_light:
+      brightness: 158
+      hs_color:
+      - 29.412
+      - 100
+      rgb_color:
+      - 255
+      - 125
+      - 0
+      xy_color:
+      - 0.615
+      - 0.372
+      white_value: 72
+      friendly_name: Lounge Left Light
+      icon: hass:globe-light
+      supported_features: 185
+      state: 'on'
+    light.lounge_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 110
+      color_temp: 450
+      friendly_name: Lounge Right Light
+      icon: hass:globe-light
+      supported_features: 43
+      state: 'on'
+    light.lounge_wall_light:
+      friendly_name: Lounge Wall Light
+      icon: hass:coach-lamp
+      supported_features: 0
+      state: 'off'
+  icon: mdi:cannabis
+- id: bedroom_relax
+  name: Bedroom Relax
+  entities:
+    light.bedroom_left_light:
+      friendly_name: Bedroom Left Light
+      icon: hass:desk-lamp
+      supported_features: 0
+      state: 'off'
+    light.bedroom_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      friendly_name: Bedroom Right Light
+      icon: hass:desk-lamp
+      supported_features: 43
+      state: 'off'
+    light.bedroom_floor_lamp:
+      min_mireds: 153
+      max_mireds: 454
+      entity_id:
+      - light.bedroom_floor_hue_1
+      - light.bedroom_floor_lamp_2
+      friendly_name: Bedroom Floor Lamp
+      icon: mdi:lightbulb-group
+      supported_features: 43
+      state: 'off'
+    light.bedroom_orb:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Bedroom Orb
+      icon: hass:lava-lamp
+      supported_features: 63
+      state: 'off'
+- id: bedroom_day
+  name: Bedroom Day
+  entities:
+    light.bedroom_left_light:
+      friendly_name: Bedroom Left Light
+      icon: hass:desk-lamp
+      supported_features: 0
+      state: 'on'
+    light.bedroom_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 255
+      color_temp: 153
+      friendly_name: Bedroom Right Light
+      icon: hass:desk-lamp
+      supported_features: 43
+      state: 'on'
+    light.bedroom_floor_lamp:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 255
+      color_temp: 153
+      entity_id:
+      - light.bedroom_floor_hue_1
+      - light.bedroom_floor_lamp_2
+      friendly_name: Bedroom Floor Lamp
+      icon: mdi:lightbulb-group
+      supported_features: 43
+      state: 'on'
+    light.bedroom_orb:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      brightness: 255
+      color_temp: 153
+      effect: none
+      friendly_name: Bedroom Orb
+      icon: hass:lava-lamp
+      supported_features: 63
+      state: 'on'
+    input_boolean.bedroom_oled:
+      editable: false
+      friendly_name: Bedroom OLED display
+      state: 'on'
+- id: bedroom_work
+  name: Bedroom Work
+  entities:
+    light.bedroom_right_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      icon: hass:desk-lamp
+      friendly_name: Bedroom Right Light
+      supported_features: 40
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 2403
+      color_temp: 416
+      hs_color:
+      - 29.142
+      - 76.154
+      rgb_color:
+      - 255
+      - 155
+      - 60
+      xy_color:
+      - 0.557
+      - 0.39
+      mode: normal
+      dynamics: none
+      state: 'on'
+    light.bedroom_orb:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      supported_color_modes:
+      - color_temp
+      - xy
+      icon: hass:lava-lamp
+      friendly_name: Bedroom Orb
+      supported_features: 40
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 2583
+      color_temp: 387
+      hs_color:
+      - 28.664
+      - 69.597
+      rgb_color:
+      - 255
+      - 162
+      - 77
+      xy_color:
+      - 0.538
+      - 0.389
+      mode: normal
+      dynamics: none
+      state: 'on'
+    light.bedroom_floor_hue_1:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 2702
+      color_temp: 370
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      mode: normal
+      dynamics: none
+      friendly_name: Bedroom Floor Hue 1
+      supported_features: 40
+      state: 'on'
+    light.bedroom_floor_lamp_2:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 2777
+      color_temp: 360
+      hs_color:
+      - 28.233
+      - 63.317
+      rgb_color:
+      - 255
+      - 169
+      - 93
+      xy_color:
+      - 0.518
+      - 0.386
+      mode: normal
+      dynamics: none
+      friendly_name: Bedroom Floor Lamp Hue 2
+      supported_features: 40
+      state: 'on'
+    switch.black_light:
+      icon: mdi:spotlight-beam
+      friendly_name: Black Light
+      state: 'on'
+  metadata: {}
+- id: bedroom_off
+  name: Bedroom Off
+  entities:
+    light.bedroom_right_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      friendly_name: Bedroom Right Light
+      supported_features: 40
+      state: unavailable
+    light.bedroom_orb:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - xy
+      effect:
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      off_with_transition: false
+      off_brightness: 254
+      friendly_name: Bedroom Orb
+      supported_features: 44
+      state: 'off'
+    light.bedroom_floor_lamp:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      entity_id:
+      - light.bedroom_floor_lamp_1
+      - light.bedroom_floor_lamp_2
+      icon: mdi:lightbulb-group
+      friendly_name: Bedroom Floor Lamp
+      supported_features: 40
+      state: 'off'
+    light.bedroom_rgb_led:
+      supported_color_modes:
+      - rgb
+      color_mode:
+      brightness:
+      hs_color:
+      rgb_color:
+      xy_color:
+      friendly_name: Bedroom RGB Led
+      supported_features: 40
+      state: 'off'
+    light.black_light:
+      supported_color_modes:
+      - onoff
+      color_mode:
+      friendly_name: Black Light
+      supported_features: 0
+      state: 'off'
+  metadata: {}
+- id: bedroom_chill
+  name: Bedroom Chill
+  entities:
+    light.bedroom_right_light:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 46
+      color_temp: 404
+      friendly_name: Bedroom Right Light
+      icon: hass:desk-lamp
+      supported_features: 43
+      state: 'on'
+    light.bedroom_floor_lamp:
+      min_mireds: 153
+      max_mireds: 454
+      brightness: 82
+      color_temp: 391
+      entity_id:
+      - light.bedroom_floor_hue_1
+      - light.bedroom_floor_lamp_2
+      friendly_name: Bedroom Floor Lamp
+      icon: mdi:lightbulb-group
+      supported_features: 43
+      state: 'on'
+    light.bedroom_orb:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      - random
+      brightness: 54
+      color_temp: 420
+      effect: none
+      friendly_name: Bedroom Orb
+      icon: hass:lava-lamp
+      supported_features: 63
+      state: 'on'
+- id: living_room_chill
+  name: Living Room Chill
+  entities:
+    light.cilinder_light:
+      brightness: 88
+      color_temp: 454
+      friendly_name: Cilinder light
+      max_mireds: 454
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.living_room_floor_lamp:
+      brightness: 59
+      friendly_name: Living Room Floor Lamp
+      node_id: 6
+      state: 'on'
+      supported_features: 1
+      value_id: '72057594143408129'
+      value_index: 0
+      value_instance: 1
+    light.living_room_floor_lamp_small:
+      brightness: 155
+      friendly_name: Living Room Floor Lamp Small
+      hs_color:
+      - 29.647
+      - 100
+      rgb_color:
+      - 255
+      - 125
+      - 0
+      state: 'on'
+      supported_features: 185
+      white_value: 103
+      xy_color:
+      - 0.615
+      - 0.372
+- id: living_room_relax
+  name: Living Room Relax
+  entities:
+    light.cilinder_light:
+      brightness: 145
+      color_temp: 443
+      friendly_name: Cilinder light
+      max_mireds: 454
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.living_room_floor_lamp:
+      brightness: 62
+      friendly_name: Living Room Floor Lamp
+      node_id: 6
+      state: 'on'
+      supported_features: 1
+      value_id: '72057594143408129'
+      value_index: 0
+      value_instance: 1
+    light.living_room_floor_lamp_small:
+      brightness: 255
+      friendly_name: Living Room Floor Lamp Small
+      hs_color:
+      - 29.863
+      - 85.882
+      rgb_color:
+      - 255
+      - 145
+      - 36
+      state: 'on'
+      supported_features: 185
+      white_value: 145
+      xy_color:
+      - 0.581
+      - 0.388
+    media_player.living_room_sonos:
+      friendly_name: Living Room Sonos 5
+      is_volume_muted: false
+      media_artist: Thievery Corporation
+      media_content_id: x-rincon-mp3radio://http://ophanim.net:7720/stream
+      media_content_type: music
+      media_title: 'Symphonik - Sweet Tides '
+      shuffle: false
+      sonos_group:
+      - media_player.living_room_sonos
+      source_list:
+      - 88.5 HD2 | Jazz24 - KNKX-HD2 (Jazz Music)
+      - 90.9 | NWPB Classical (Public Radio)
+      - 98.1 | Classical KING FM 98.1 (Classical Music)
+      - Best of thug
+      - Favorites Mix
+      - Jazz Grooves
+      - KBCS
+      - KEXP-FM
+      - 'Tame Impala: Next Steps'
+      - Line-in
+      state: playing
+      supported_features: 64063
+      volume_level: 0.08
+- id: living_room_work
+  name: Living Room Work
+  entities:
+    light.cilinder_light:
+      brightness: 255
+      color_temp: 153
+      friendly_name: Cilinder light
+      max_mireds: 454
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.living_room_floor_lamp:
+      brightness: 8
+      friendly_name: Living Room Floor Lamp
+      node_id: 6
+      state: 'on'
+      supported_features: 1
+      value_id: '72057594143408129'
+      value_index: 0
+      value_instance: 1
+    light.living_room_floor_lamp_small:
+      brightness: 246
+      friendly_name: Living Room Floor Lamp Small
+      hs_color:
+      - 0
+      - 0
+      rgb_color:
+      - 255
+      - 255
+      - 255
+      state: 'on'
+      supported_features: 185
+      white_value: 168
+      xy_color:
+      - 0.323
+      - 0.329
+    media_player.living_room_sonos:
+      friendly_name: Living Room Sonos 5
+      is_volume_muted: false
+      media_content_id: x-rincon-mp3radio://https://streams.nwpr.org:8443/NWPRCLASSICAL
+      media_content_type: music
+      media_title: NWPRCLASSICAL
+      shuffle: false
+      sonos_group:
+      - media_player.living_room_sonos
+      source_list:
+      - 88.5 HD2 | Jazz24 - KNKX-HD2 (Jazz Music)
+      - 90.9 | NWPB Classical (Public Radio)
+      - 98.1 | Classical KING FM 98.1 (Classical Music)
+      - Best of thug
+      - Favorites Mix
+      - Jazz Grooves
+      - KBCS
+      - KEXP-FM
+      - 'Tame Impala: Next Steps'
+      - Line-in
+      state: playing
+      supported_features: 64063
+      volume_level: 0.38
+- id: living_room_day
+  name: Living Room Day
+  entities:
+    light.cilinder_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      off_with_transition: false
+      off_brightness:
+      friendly_name: Cylinder Light
+      supported_features: 40
+      icon: mdi:lamp
+      color_mode: color_temp
+      brightness: 131
+      color_temp_kelvin: 3508
+      color_temp: 285
+      hs_color:
+      - 27.165
+      - 44.6
+      rgb_color:
+      - 255
+      - 192
+      - 141
+      xy_color:
+      - 0.454
+      - 0.373
+      state: 'on'
+    light.living_room_floor_lamp:
+      supported_color_modes:
+      - brightness
+      friendly_name: Living Room Floor Lamp
+      supported_features: 32
+      icon: mdi:floor-lamp
+      color_mode: brightness
+      brightness: 67
+      state: 'on'
+    light.music_task_lamp:
+      supported_color_modes:
+      - onoff
+      icon: mdi:desk-lamp-on
+      friendly_name: Music Task Lamp
+      supported_features: 0
+      state: 'off'
+  metadata:
+    light.music_task_lamp:
+      entity_only: true
+- id: living_room_off
+  name: Living Room Off
+  entities:
+    light.cilinder_light:
+      min_mireds: 153
+      max_mireds: 454
+      friendly_name: Cilinder light
+      supported_features: 43
+      state: 'off'
+    light.living_room_floor_lamp:
+      node_id: 6
+      value_index: 0
+      value_instance: 1
+      value_id: '72057594143408129'
+      friendly_name: Living Room Floor Lamp
+      supported_features: 1
+      state: 'off'
+    media_player.living_room_sonos:
+      source_list:
+      - 88.5 HD2 | Jazz24 - KNKX-HD2 (Jazz Music)
+      - 90.9 | NWPB Classical (Public Radio)
+      - 98.1 | Classical KING FM 98.1 (Classical Music)
+      - Best of thug
+      - Favorites Mix
+      - Jazz Grooves
+      - KBCS
+      - KEXP-FM
+      - 'Tame Impala: Next Steps'
+      - 'Turntable: Living Room'
+      volume_level: 0.28
+      is_volume_muted: false
+      media_content_id: http://192.168.2.21:8123/api/tts_proxy/d09960283ee880497ef4100f051597a7e5a53f7b_en-us_5193252158018750205_cloud.mp3
+      media_content_type: music
+      media_duration: 1
+      media_position: 0
+      media_position_updated_at: '2021-01-17T18:37:08.751773+00:00'
+      media_title: Living Room Off
+      media_artist: en-US
+      media_album_name: Cloud
+      shuffle: false
+      repeat: 'off'
+      sonos_group:
+      - media_player.dining_room_sonos
+      - media_player.living_room_sonos
+      queue_position: 0
+      friendly_name: Sonos Play5 5
+      supported_features: 457279
+      state: paused
+- id: dining_breakfast
+  name: Dining Room Breakfast
+  entities:
+    light.dining_ceiling_light:
+      brightness: 49
+      friendly_name: Dining Lights
+      node_id: 5
+      state: 'on'
+      supported_features: 1
+      value_id: '72057594126630913'
+      value_index: 0
+      value_instance: 1
+- id: dining_off
+  name: Dining Off
+  entities:
+    light.dining_ceiling_light:
+      friendly_name: Dining Lights
+      node_id: 5
+      state: 'off'
+      supported_features: 1
+      value_id: '72057594126630913'
+      value_index: 0
+      value_instance: 1
+- id: dining_work
+  name: Dining Work
+  entities:
+    light.dining_ceiling_light:
+      brightness: 198
+      friendly_name: Dining Lights
+      node_id: 5
+      state: 'on'
+      supported_features: 1
+      value_id: '72057594126630913'
+      value_index: 0
+      value_instance: 1
+- id: dining_dinner
+  name: Dining Dinner
+  entities:
+    light.dining_ceiling_light:
+      brightness: 98
+      friendly_name: Dining Lights
+      node_id: 5
+      state: 'on'
+      supported_features: 1
+      value_id: '72057594126630913'
+      value_index: 0
+      value_instance: 1
+- id: dining_chill
+  name: Dining Chill
+  entities:
+    light.dining_ceiling_light:
+      brightness: 54
+      friendly_name: Dining Lights
+      node_id: 5
+      state: 'on'
+      supported_features: 1
+      value_id: '72057594126630913'
+      value_index: 0
+      value_instance: 1
+- id: gym_workout
+  name: Gym Workout
+  entities:
+    light.gym_ceiling_light:
+      brightness: 100
+      friendly_name: Gym Ceiling Light
+      state: 'on'
+      supported_features: 1
+    light.gym_hallway_light:
+      brightness: 100
+      friendly_name: Gym Hallway Light
+      state: 'on'
+      supported_features: 1
+    switch.gym_fan:
+      friendly_name: gym fan
+      icon: ''
+      state: 'on'
+- id: gym_off
+  name: Gym Off
+  entities:
+    light.gym_ceiling_light:
+      friendly_name: Gym Ceiling Light
+      state: 'off'
+      supported_features: 1
+    light.gym_hallway_light:
+      friendly_name: Gym Hallway Light
+      state: 'off'
+      supported_features: 1
+    switch.gym_fan:
+      friendly_name: gym fan
+      icon: ''
+      state: 'off'
+- id: gym_day
+  name: Gym Day
+  entities:
+    light.gym_ceiling_light:
+      brightness: 100
+      friendly_name: Gym Ceiling Light
+      state: 'on'
+      supported_features: 1
+    light.gym_hallway_light:
+      friendly_name: Gym Hallway Light
+      state: 'off'
+      supported_features: 1
+    switch.gym_fan:
+      friendly_name: gym fan
+      icon: ''
+      state: 'off'
+- id: '1677111374959'
+  name: 2nd Floor Day
+  entities:
+    light.living_room_floor_lamp:
+      supported_color_modes:
+      - brightness
+      color_mode:
+      brightness:
+      friendly_name: Living Room Floor Lamp
+      supported_features: 32
+      icon: mdi:floor-lamp
+      state: 'off'
+    light.cilinder_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 148
+      color_temp_kelvin: 4098
+      color_temp: 244
+      hs_color:
+      - 26.773
+      - 33.124
+      rgb_color:
+      - 255
+      - 208
+      - 170
+      xy_color:
+      - 0.415
+      - 0.363
+      off_with_transition: false
+      off_brightness:
+      friendly_name: Cylinder Light
+      supported_features: 40
+      icon: mdi:lamp
+      state: 'on'
+    light.kitchen_ceiling_light:
+      supported_color_modes:
+      - brightness
+      color_mode:
+      brightness:
+      friendly_name: Kitchen Ceiling Light
+      supported_features: 32
+      icon: mdi:ceiling-light
+      state: 'off'
+    light.dining_ceiling_light:
+      supported_color_modes:
+      - brightness
+      color_mode:
+      brightness:
+      friendly_name: Dining Ceiling Light
+      supported_features: 32
+      icon: mdi:ceiling-light
+      state: 'off'
+    switch.music_task_lamp:
+      icon: hass:desk-lamp
+      friendly_name: Music Task Lamp
+      state: 'on'
+  metadata:
+    light.living_room_floor_lamp:
+      entity_only: true
+    light.cilinder_light:
+      entity_only: true
+    light.kitchen_ceiling_light:
+      entity_only: true
+    light.dining_ceiling_light:
+      entity_only: true
+    switch.music_task_lamp:
+      entity_only: true
+  icon: mdi:white-balance-sunny
+- id: '1677111638301'
+  name: 2nd Floor Night
+  entities:
+    light.living_room_floor_lamp:
+      supported_color_modes:
+      - brightness
+      color_mode: brightness
+      brightness: 255
+      friendly_name: Living Room Floor Lamp
+      supported_features: 32
+      icon: mdi:floor-lamp
+      state: 'on'
+    light.cilinder_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 254
+      color_temp_kelvin: 3144
+      color_temp: 318
+      hs_color:
+      - 27.604
+      - 53.118
+      rgb_color:
+      - 255
+      - 181
+      - 119
+      xy_color:
+      - 0.484
+      - 0.38
+      off_with_transition: false
+      off_brightness:
+      friendly_name: Cylinder Light
+      supported_features: 40
+      icon: mdi:lamp
+      state: 'on'
+    light.kitchen_ceiling_light:
+      supported_color_modes:
+      - brightness
+      color_mode: brightness
+      brightness: 93
+      friendly_name: Kitchen Ceiling Light
+      supported_features: 32
+      icon: mdi:ceiling-light
+      state: 'on'
+    light.dining_ceiling_light:
+      supported_color_modes:
+      - brightness
+      color_mode: brightness
+      brightness: 85
+      friendly_name: Dining Ceiling Light
+      supported_features: 32
+      icon: mdi:ceiling-light
+      state: 'on'
+    switch.music_task_lamp:
+      icon: hass:desk-lamp
+      friendly_name: Music Task Lamp
+      state: 'on'
+  metadata:
+    light.living_room_floor_lamp:
+      entity_only: true
+    light.cilinder_light:
+      entity_only: true
+    light.kitchen_ceiling_light:
+      entity_only: true
+    light.dining_ceiling_light:
+      entity_only: true
+    switch.music_task_lamp:
+      entity_only: true
+  icon: mdi:weather-night
+- id: '1677112043046'
+  name: 2nd Floor - Off
+  entities:
+    light.living_room_floor_lamp:
+      supported_color_modes:
+      - brightness
+      color_mode:
+      brightness:
+      friendly_name: Living Room Floor Lamp
+      supported_features: 32
+      icon: mdi:floor-lamp
+      state: 'off'
+    switch.music_task_lamp:
+      icon: hass:desk-lamp
+      friendly_name: Music Task Lamp
+      state: 'off'
+    light.kitchen_ceiling_light:
+      supported_color_modes:
+      - brightness
+      color_mode:
+      brightness:
+      friendly_name: Kitchen Ceiling Light
+      supported_features: 32
+      icon: mdi:ceiling-light
+      state: 'off'
+    light.dining_ceiling_light:
+      supported_color_modes:
+      - brightness
+      color_mode:
+      brightness:
+      friendly_name: Dining Ceiling Light
+      supported_features: 32
+      icon: mdi:ceiling-light
+      state: 'off'
+    light.cilinder_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      off_with_transition: false
+      off_brightness: 254
+      friendly_name: Cylinder Light
+      supported_features: 40
+      icon: mdi:lamp
+      state: 'off'
+    light.hall_light:
+      supported_color_modes:
+      - brightness
+      color_mode:
+      brightness:
+      friendly_name: Hall Light
+      supported_features: 32
+      state: 'off'
+  icon: mdi:lightbulb-multiple-off
+  metadata:
+    light.living_room_floor_lamp:
+      entity_only: true
+    switch.music_task_lamp:
+      entity_only: true
+    light.kitchen_ceiling_light:
+      entity_only: true
+    light.dining_ceiling_light:
+      entity_only: true
+    light.cilinder_light:
+      entity_only: true

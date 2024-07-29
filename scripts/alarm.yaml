@@ -1,0 +1,25 @@
+ring_doorbell:
+  alias: door bell was rang
+  sequence:
+    - service: camera.snapshot
+      data:
+        entity_id: camera.front_door
+        filename: /config/www/doorbell1.jpg
+
+    - service: notify.family
+      data:
+        data:
+          attachment:
+            url: "http://192.168.2.21:8123/local/doorbell1.jpg"
+            content-type: jpeg
+            hide-thumbnail: false
+          push:
+            sound: US-EN-Daisy-Front-Door-Motion.wav
+        message: Someone rang doorbell
+
+    - service: script.announce_message
+      data:
+        message: The front door bell was just rang
+    
+    - delay:
+        seconds: 10

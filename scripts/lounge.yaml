@@ -1,0 +1,51 @@
+turn_off_projector:
+  alias: turn off projector
+  sequence:
+  - data:
+      command: PowerToggle
+      delay_secs: '1'
+      device: Epson Projector
+      entity_id: remote.lounge
+      num_repeats: '3'
+    service: remote.send_command
+
+lower_volume_lounge:
+  alias: lower volume lounge
+  sequence:
+  - data:
+      entity_id: remote.lounge
+      device: Vizio Amp
+      command: VolumeDown
+      delay_secs: 1
+      num_repeats: 2
+    service: remote.send_command
+
+increase_volume_lounge:
+  alias: increase volume lounge
+  sequence:
+  - data:
+      entity_id: remote.lounge
+      device: Vizio Amp
+      command: VolumeUp
+      delay_secs: 0
+      num_repeats: 2
+    service: remote.send_command
+
+mute_volume_lounge:
+  alias: increase volume lounge
+  sequence:
+  - data:
+      entity_id: remote.lounge
+      device: Vizio Amp
+      command: Mute
+    service: remote.send_command
+
+turn_on_projector:
+  alias: turn on projector
+  sequence:
+  - data:
+      entity_id: remote.lounge
+      command: PowerToggle
+      delay_secs: '1'
+      device: Epson Projector
+    service: remote.send_command

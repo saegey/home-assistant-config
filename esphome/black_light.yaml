@@ -1,0 +1,39 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: black_light
+  platform: ESP8266
+  board: esp8285
+  # arduino_version: "2.4.2"
+
+<<: !include components/core.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: True
+    name: "black light manual switch"
+    on_press:
+      - switch.toggle: relay
+
+switch:
+  - platform: gpio
+    name: "black light"
+    pin: GPIO12
+    id: relay
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes
+    
+sensor:
+  - platform: uptime
+    name: "Black light Uptime"
+    
+  - platform: wifi_signal
+    name: "Black light WiFi Signal"
+    update_interval: 60s

@@ -1,0 +1,39 @@
+switch.lounge_reading_light:
+  ignored: false
+  polling_intensity: 0
+switch.bedroom_wall_lig_switch:
+  ignored: false
+  polling_intensity: 0
+switch.exterior_rear_li_switch:
+  ignored: false
+  polling_intensity: 0
+switch.foyer_light_switch:
+  ignored: false
+  polling_intensity: 0
+switch.bedroom_right_light:
+  ignored: false
+  polling_intensity: 0
+lock.front_door_deadbolt:
+  ignored: false
+  polling_intensity: 0
+sensor.kwikset_touchpad_electronic_deadbolt_alarm_level:
+  ignored: false
+  polling_intensity: 0
+sensor.kwikset_touchpad_electronic_deadbolt_alarm_type:
+  ignored: false
+  polling_intensity: 0
+switch.jasco_products_14291_in_wall_smart_switch_switch_2:
+  ignored: false
+  polling_intensity: 0
+light.second_floor_big_lamp:
+  ignored: false
+  polling_intensity: 0
+light.dining_ceiling_light:
+  ignored: false
+  polling_intensity: 0
+switch.exterior_rear_light:
+  ignored: false
+  polling_intensity: 0
+switch.honeywell_39348_zw4008_in_wall_smart_switch_switch:
+  ignored: false
+  polling_intensity: 0

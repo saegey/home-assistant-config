@@ -1,0 +1,2442 @@
+- id: '1609812514200'
+  alias: Security - Nest API Doorbell Pressed 2nd floor playing
+  description: ''
+  trigger:
+  - platform: device
+    device_id: ce48401c8d89f1391b9432705789f9ee
+    domain: nest
+    type: doorbell_chime
+  condition:
+  - condition: device
+    device_id: 704aab7349e3d771e7fb6325186a812a
+    domain: media_player
+    entity_id: ec4619b14820859f9c887aef982ab6bf
+    type: is_playing
+  action:
+  - service: notify.family
+    data:
+      message: "\U0001F514 Door bell was rung!"
+  - service: mqtt.publish
+    data:
+      topic: alarmpanel/command
+      payload_template: '{"speak": "The doorbell was just rang!"}
+
+        '
+  - sequence:
+    - service: media_player.toggl
+      data: {}
+      target:
+        device_id: 704aab7349e3d771e7fb6325186a812a
+    - service: tts.speak
+      metadata: {}
+      data:
+        cache: true
+        media_player_entity_id: media_player.2nd_floor
+        message: doorbell was rang
+      target:
+        entity_id: tts.home_assistant_cloud
+      continue_on_error: true
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 4
+        milliseconds: 0
+      enabled: true
+    - service: media_player.media_play
+      target:
+        device_id:
+        - 704aab7349e3d771e7fb6325186a812a
+      data: {}
+  mode: single
+- id: door_close_led
+  alias: Security - Door Close Notifications
+  trigger:
+  - entity_id: group.doors
+    platform: state
+    to: 'off'
+  action:
+  - service: light.turn_off
+    entity_id: light.sensor_leds
+  mode: single
+- id: autolock_doors
+  alias: Security - Lock open doors
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: lock.front_door_deadbolt_lock
+    to: unlocked
+    for: 0:05:00
+  - platform: state
+    entity_id: lock.garage_door_deadbolt_lock
+    to: unlocked
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  action:
+  - service: lock.lock
+    data: {}
+    target:
+      entity_id:
+      - lock.front_door_deadbolt_lock
+      - lock.garage_door_deadbolt_lock
+  mode: single
+- id: start_homekit_after_zwave
+  alias: System - Start HomeKit after zwave
+  trigger:
+  - platform: event
+    event_type: zwave.network_ready
+  - platform: event
+    event_type: zwave.network_complete
+  - platform: event
+    event_type: zwave.network_complete_some_dead
+  action:
+  - service: homekit.reload
+  mode: single
+- id: open_garage_door_using_wall_switch
+  alias: System - Open garage door with wall switch when alarm is disarmed
+  trigger:
+  - entity_id: binary_sensor.garage_door_wall_switch
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.garage
+    state: disarmed
+  action:
+  - service: homeassistant.turn_on
+    entity_id: switch.garage_door_relay_switch
+  mode: single
+- alias: auto desk lamp on
+  id: auto_desk_lamp_on
+  trigger:
+  - entity_id: binary_sensor.lounge_motion_sensor
+    from: 'off'
+    platform: state
+    to: 'on'
+  action:
+    service: homeassistant.turn_on
+    entity_id: light.desk_lamp
+- alias: auto desk lamp off
+  id: auto_desk_lamp_off
+  trigger:
+    platform: state
+    entity_id: binary_sensor.lounge_motion_sensor
+    to: 'off'
+    for:
+      minutes: 10
+  action:
+    service: homeassistant.turn_off
+    entity_id: light.desk_lamp
+- id: arrive_home_daytime
+  alias: Person - arrive home daytime
+  trigger:
+  - platform: state
+    entity_id: person.adam
+    to: home
+  - platform: state
+    entity_id: person.scarlett
+    to: home
+  condition:
+  - condition: sun
+    before: sunset
+  action:
+  - service: notify.family
+    data:
+      message: Person Arrive home before sunset. Add Automation to this plz.
+  mode: single
+- id: midnight
+  alias: Security - Night Mode aka Midnight
+  trigger:
+  - platform: time
+    at: 00:00:00
+  action:
+  - service: alarm_control_panel.alarm_arm_night
+    data:
+      code: 2483
+    target:
+      entity_id:
+      - alarm_control_panel.master
+  mode: single
+- id: sunrise
+  alias: Lights - Sunrise Exterior
+  trigger:
+  - platform: sun
+    event: sunrise
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id:
+      - light.rear_outdoor_light
+      - light.exterior_front_light_2
+  mode: single
+- id: sunset
+  alias: Lights - Sunset Exterior/Interior
+  trigger:
+  - event: sunset
+    platform: sun
+    offset: 00:00:00
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id:
+      - light.rear_outdoor_light
+      - light.exterior_front_light_2
+  mode: single
+- id: '1610911060983'
+  alias: Lights - Motion-activated Foyer Closet
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      no_motion_wait: '180'
+      motion_entity: binary_sensor.entryway_closet_motion_sensor
+      light_target:
+        entity_id: light.entryway_closet_ceiling_light
+- id: '1610911793817'
+  alias: Lights - Motion-activated Kitchen
+  description: Turn on kitchen lights for 10 min if motion sensor triggered
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      no_motion_wait: 2400
+      motion_entity: binary_sensor.kitchen_motion_sensor
+      light_target:
+        device_id: 5136dad1372ed5662ec67d74b591f0b0
+- id: '1610912749218'
+  alias: Lights - Motion-activated Hallway
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      no_motion_wait: 600
+      motion_entity: binary_sensor.2nd_motion_detector
+      light_target:
+        entity_id: light.hallway_light
+- id: '1610913208293'
+  alias: Lights - Motion-activated Foyer
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      no_motion_wait: 600
+      motion_entity: binary_sensor.foyer_motion_sensor
+      light_target:
+        entity_id:
+        - light.foyer_ceiling
+        - light.gym_hallway_light_2
+- id: '1610922451452'
+  alias: Music - listening to music in living room
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.2nd_floor_squeezelite
+    to: playing
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    entity_id: input_boolean.listening_to_music_living_room
+  mode: single
+- id: '1611531540134'
+  alias: Panel - Doors Sensor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: group.doors
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      topic: home/sensor/doors
+      payload_template: "{% if is_state('group.doors', 'off') %}  CLOSED  {% else
+        %}  {% set security_state = states |\n  selectattr('entity_id','in',state_attr('group.doors','entity_id'))\n
+        \ | selectattr('state','eq','on') | list %} {% for state in security_state\n
+        \ -%} {{ state.name }} {%- if not loop.last %}, {% endif -%} {%-\n  endfor
+        %}\n{% endif %}\n"
+      retain: true
+  mode: single
+- id: '1611534639616'
+  alias: Panel - Garage Door Sensor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.garage_overhead_door_sensor
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      topic: home/sensor/garage
+      payload_template: '{% if is_state(''binary_sensor.garage_overhead_door_sensor'',
+        ''off'') %}  CLOSED  {% else %}  OPENED {% endif %}
+
+        '
+      retain: true
+  mode: single
+- id: '1611535874895'
+  alias: Panel - weather publish
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: weather.dark_sky
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      payload_template: '{''weather'':{''condition'':''{{states.weather.dark_sky.state}}'',''humidity'':{{states.weather.dark_sky.attributes.humidity}},''temperature'':{{states.weather.dark_sky.attributes.temperature}},''forecast'':{{states.weather.dark_sky.attributes.forecast}}}}'
+      retain: true
+      topic: alarmpanel/command
+  mode: single
+- id: '1611955061175'
+  alias: Lights - Auto garage light off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.garage_door
+    to: 'off'
+    for: 20 minutes
+  condition: []
+  action:
+  - service: light.turn_off
+    data: {}
+    entity_id: light.garage_light
+  mode: single
+- id: '1611959271564'
+  alias: Security - Front door lock invalid code
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.front_door_deadbolt_alarmlevel
+    to: '161'
+  condition: []
+  action:
+  - service: notify.family
+    data:
+      message: Front door invalid keycode entered
+  - service: persistent_notification.create
+    data:
+      message: door invalid code
+  mode: single
+- alias: Notify Snapshot Failure
+  trigger:
+    platform: event
+    event_type: auto_backup.snapshot_failed
+  action:
+    service: persistent_notification.create
+    data_template:
+      title: Snapshot Failed.
+      message: 'Name: {{ trigger.event.data.name }}
+
+        Error: {{ trigger.event.data.error }}'
+  id: 5a39c162f6c44e5e8dfbc94fa4df53eb
+- id: '1614720327557'
+  alias: Lights - Interior Garage Door Sensor-activated Light
+  description: ''
+  use_blueprint:
+    path: bergstrom/door-sensor-turn-on-off-light.yaml
+    input:
+      door_closed_wait: 300
+      doorsensor_entity: binary_sensor.garage_interior_door
+      light_target:
+        entity_id: light.garage_ceiling_light
+- id: '1615226820841'
+  alias: Lights - Turn off desk light when projector is on
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.epson
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: d3099222ea004fc881993bd007e3652d
+    entity_id: switch.lounge_desk_overhead_lights
+    domain: switch
+  mode: single
+- id: '1676575771322'
+  alias: Bedroom - Button Press Change Input Boolean
+  description: ''
+  trigger:
+  - device_id: ebac904d1ef85633299be989729314c9
+    domain: zha
+    platform: device
+    type: remote_button_short_press
+    subtype: remote_button_short_press
+  condition: []
+  action:
+  - service: input_select.select_next
+    data:
+      cycle: true
+    target:
+      entity_id: input_select.bedroom_switch_scenes
+  mode: single
+- id: '1676575870874'
+  alias: Bedroom - Switch Scene to Work
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.bedroom_switch_scenes
+    to: Work
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.bedroom_work
+    metadata: {}
+  mode: single
+- id: '1676575972277'
+  alias: Bedroom - switch scene to relax
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.bedroom_switch_scenes
+    to: Relax
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.bedroom_relax
+    metadata: {}
+  mode: single
+- id: '1676576136323'
+  alias: Bedroom - Long Press Turn off scene
+  description: ''
+  trigger:
+  - device_id: ebac904d1ef85633299be989729314c9
+    domain: zha
+    platform: device
+    type: remote_button_long_press
+    subtype: remote_button_long_press
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.bedroom_off
+    metadata: {}
+  mode: single
+- id: '1676595105162'
+  alias: Bike Room - Motion activated lights
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      no_motion_wait: 600
+      motion_entity: binary_sensor.gym_motion_sensor
+      light_target:
+        entity_id: light.bike_room_light_switch
+- id: '1676598378118'
+  alias: Lounge - Desk light off if media playing
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.lounge
+    to: playing
+  condition:
+  - condition: or
+    conditions:
+    - condition: device
+      type: is_on
+      device_id: d3099222ea004fc881993bd007e3652d
+      entity_id: switch.lounge_desk_overhead_lights
+      domain: switch
+    - condition: device
+      type: is_on
+      device_id: 308951bf2b68a37c5987b3a1976ec601
+      entity_id: switch.lounge_wall_light
+      domain: switch
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.lounge_desk_overhead_lights
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.lounge_wall_light
+  mode: single
+- id: '1677110255590'
+  alias: Lounge - Button Short Press Triggers Next Scene
+  description: ''
+  trigger:
+  - device_id: c7365d55af491cc4279a5d606078989f
+    domain: zha
+    platform: device
+    type: remote_button_short_press
+    subtype: remote_button_short_press
+  condition: []
+  action:
+  - service: input_select.select_next
+    data:
+      cycle: true
+    target:
+      entity_id: input_select.lounge_scenes
+  mode: single
+- id: '1677110504758'
+  alias: Lounge - Input Trigger Scene - Work
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.lounge_scenes
+    to: Work
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.lounge_work
+    metadata: {}
+  mode: single
+- id: '1677110550518'
+  alias: Lounge - Input Trigger Scene - Relax
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.lounge_scenes
+    to: Relax
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.lounge_relax
+    metadata: {}
+  mode: single
+- id: '1677110579214'
+  alias: Lounge - Input Trigger Scene - Day
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.lounge_scenes
+    to: Day
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.lounge_day
+    metadata: {}
+  mode: single
+- id: '1677110647826'
+  alias: Lounge - Input Trigger Scene - Night
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.lounge_scenes
+    to: Night
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.lounge_nightlight
+    metadata: {}
+  mode: single
+- id: '1677110822208'
+  alias: Lounge - Remote Long Press Trigger Off Scene
+  description: ''
+  trigger:
+  - device_id: c7365d55af491cc4279a5d606078989f
+    domain: zha
+    platform: device
+    type: remote_button_long_release
+    subtype: remote_button_long_release
+  condition: []
+  action:
+  - service: scene.turn_on
+    data:
+      transition: 3
+    target:
+      entity_id: scene.lounge_off
+  mode: single
+- id: '1677111792996'
+  alias: 2nd Floor - Remote Short Perss Trigger Next Input Select Scene
+  description: ''
+  trigger:
+  - device_id: d5a5017c8afa7d6878c8fa75a9139218
+    domain: zha
+    platform: device
+    type: remote_button_short_press
+    subtype: remote_button_short_press
+  condition: []
+  action:
+  - service: input_select.select_next
+    data:
+      cycle: true
+    target:
+      entity_id: input_select.2nd_floor_scenes
+  mode: single
+- id: '1677111877935'
+  alias: 2nd Floor - Trigger Day Scene
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.2nd_floor_scenes
+    to: Day
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.day
+    metadata: {}
+  mode: single
+- id: '1677111909456'
+  alias: 2nd Floor - Trigger Night Scene
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.2nd_floor_scenes
+    to: Night
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.2nd_floor_day_night
+    metadata: {}
+  mode: single
+- id: '1677112079415'
+  alias: 2nd Floor - Long Press Trigger Off Scene
+  description: ''
+  trigger:
+  - device_id: d5a5017c8afa7d6878c8fa75a9139218
+    domain: zha
+    platform: device
+    type: remote_button_long_release
+    subtype: remote_button_long_release
+  condition: []
+  action:
+  - service: media_player.media_play_pause
+    metadata: {}
+    data: {}
+    target:
+      device_id: 704aab7349e3d771e7fb6325186a812a
+  mode: single
+- id: '1677127236576'
+  alias: 2nd Floor - Change music source
+  description: ''
+  trigger:
+  - device_id: d5a5017c8afa7d6878c8fa75a9139218
+    domain: zha
+    platform: device
+    type: remote_button_double_press
+    subtype: remote_button_double_press
+  condition: []
+  action:
+  - service: input_select.select_next
+    target:
+      entity_id: input_select.music_sources
+    data:
+      cycle: true
+  mode: single
+- id: '1677127756133'
+  alias: 2nd floor - stop music double press
+  description: ''
+  trigger:
+  - device_id: d5a5017c8afa7d6878c8fa75a9139218
+    domain: zha
+    platform: device
+    type: remote_button_double_press
+    subtype: remote_button_double_press
+  condition:
+  - condition: device
+    device_id: cf61560b7a6da09989f998c30f3abb7d
+    domain: media_player
+    entity_id: media_player.wiim_mini_e092
+    type: is_playing
+  action:
+  - service: media_player.media_play_pause
+    data: {}
+    target:
+      entity_id: media_player.2nd_floor
+  mode: single
+- id: '1680050230518'
+  alias: Alarm - Disable  alarm when open front door via keypad for Owner
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_notification
+    event_data:
+      label: Access Control
+      type: 6
+      event: 6
+      event_label: Keypad unlock operation
+      parameters:
+        userId: 1
+  condition: []
+  action:
+  - service: alarm_control_panel.alarm_disarm
+    data:
+      code: '2483'
+    target:
+      entity_id:
+      - alarm_control_panel.master
+  - service: climate.set_preset_mode
+    metadata: {}
+    data:
+      preset_mode: home
+    target:
+      entity_id: climate.main_thermostat
+  mode: single
+- id: '1680052071519'
+  alias: set alarm when one is home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.someone_home
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - service: alarm_control_panel.alarm_arm_away
+    data:
+      code: '2483'
+    target:
+      entity_id:
+      - alarm_control_panel.master
+  mode: single
+- id: '1687646207997'
+  alias: Lounge - Double tap to turn off
+  description: ''
+  trigger:
+  - device_id: c7365d55af491cc4279a5d606078989f
+    domain: zha
+    platform: device
+    type: remote_button_double_press
+    subtype: remote_button_double_press
+  condition:
+  - condition: device
+    device_id: f0f53d34cd3fb5a101976d06825b5369
+    domain: media_player
+    entity_id: media_player.epson
+    type: is_on
+  action:
+  - service: media_player.turn_off
+    data: {}
+    target:
+      device_id: f0f53d34cd3fb5a101976d06825b5369
+  mode: single
+- id: '1687646245809'
+  alias: Lounge - Double tap to turn on projector
+  description: ''
+  trigger:
+  - device_id: c7365d55af491cc4279a5d606078989f
+    domain: zha
+    platform: device
+    type: remote_button_double_press
+    subtype: remote_button_double_press
+  condition:
+  - condition: device
+    device_id: f0f53d34cd3fb5a101976d06825b5369
+    domain: media_player
+    entity_id: media_player.epson
+    type: is_off
+  action:
+  - service: media_player.turn_on
+    data: {}
+    target:
+      device_id: f0f53d34cd3fb5a101976d06825b5369
+  mode: single
+- id: '1687884970385'
+  alias: Notify - Garage is open
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - cover.garage_door
+    to: open
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.family
+    data:
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+      message: "\U0001F6AAGarage is open!"
+      title: Garage is open
+  mode: single
+- id: '1704301713091'
+  alias: Arm Garage if disarmed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - alarm_control_panel.garage
+    to: disarmed
+    from:
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: binary_sensor.garage_overhead_door_sensor
+    state: 'off'
+  action:
+  - service: alarm_control_panel.alarm_arm_home
+    target:
+      entity_id: alarm_control_panel.garage
+    data: {}
+  mode: single
+- id: '1706479971519'
+  alias: Warmup Espresso machine in the morning
+  description: ''
+  trigger:
+  - platform: time
+    at: 06:30:00
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: person.adam
+      state: home
+    - condition: state
+      entity_id: person.scarlett
+      state: home
+  action:
+  - type: turn_on
+    device_id: 991130eb5da406686718958e8a5dae9f
+    entity_id: d0737a8dbdc85eec7c7834677992907c
+    domain: switch
+  mode: single
+- id: '1706480184384'
+  alias: Turn off espresso machine if gone for an hour
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.scarlett
+    to: not_home
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: person.adam
+    state: not_home
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  action:
+  - type: turn_off
+    device_id: 991130eb5da406686718958e8a5dae9f
+    entity_id: d0737a8dbdc85eec7c7834677992907c
+    domain: switch
+  mode: single
+- id: '1706550708362'
+  alias: Espresso on notification
+  description: ''
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.espresso_machine
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 991130eb5da406686718958e8a5dae9f
+    entity_id: d0737a8dbdc85eec7c7834677992907c
+    domain: switch
+  action:
+  - variables:
+      action_close: '{{ ''TURN_OFF_ROCKET'' }}'
+  - service: notify.mobile_app_adams_iphone
+    metadata: {}
+    data:
+      title: Espresso machine is about to go ECO
+      message: Do you want to?
+      data:
+        actions:
+        - action: '{{ action_close }}'
+          title: Turn off
+        tag: espress-notification
+  - wait_for_trigger:
+    - platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: '{{ action_open }}'
+    - platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: '{{ action_close }}'
+    timeout:
+      hours: 0
+      minutes: 4
+      seconds: 0
+      milliseconds: 0
+    enabled: false
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ wait.trigger.event.data.action == action_open }}'
+      sequence:
+      - service: switch.turn_off
+        target:
+          device_id:
+          - 991130eb5da406686718958e8a5dae9f
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          device_id: 991130eb5da406686718958e8a5dae9f
+      - service: timer.start
+        metadata: {}
+        data: {}
+        target:
+          entity_id: timer.espresso_machine
+      alias: Keep machine on
+    default:
+    - service: switch.turn_off
+      metadata: {}
+      data: {}
+      target:
+        device_id: 991130eb5da406686718958e8a5dae9f
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 5
+        milliseconds: 0
+    - service: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        device_id: 991130eb5da406686718958e8a5dae9f
+    - service: timer.start
+      metadata: {}
+      data: {}
+      target:
+        entity_id: timer.espresso_machine
+    enabled: false
+  mode: single
+- id: '1706552303408'
+  alias: Start Espresso timer
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.rocket_espresso_machine_switch
+    to: 'on'
+    from: 'off'
+  condition: []
+  action:
+  - service: timer.start
+    metadata: {}
+    data: {}
+    target:
+      entity_id: timer.espresso_machine
+  mode: single
+- id: '1706571181518'
+  alias: Turn off espresso from push notification
+  description: ''
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: TURN_OFF_ROCKET
+  condition: []
+  action:
+  - service: notify.mobile_app_adams_iphone
+    metadata: {}
+    data:
+      message: Machine has been turned off
+  - service: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id: 991130eb5da406686718958e8a5dae9f
+  mode: single
+- id: '1706810309755'
+  alias: Keep espresso machine on
+  description: ''
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.espresso_machine
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 991130eb5da406686718958e8a5dae9f
+    entity_id: d0737a8dbdc85eec7c7834677992907c
+    domain: switch
+  action:
+  - type: turn_off
+    device_id: 991130eb5da406686718958e8a5dae9f
+    entity_id: d0737a8dbdc85eec7c7834677992907c
+    domain: switch
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - type: turn_on
+    device_id: 991130eb5da406686718958e8a5dae9f
+    entity_id: d0737a8dbdc85eec7c7834677992907c
+    domain: switch
+  mode: single
+- id: '1706810629989'
+  alias: Cancel timer if espresso machine switched off
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_off
+    device_id: 991130eb5da406686718958e8a5dae9f
+    entity_id: d0737a8dbdc85eec7c7834677992907c
+    domain: switch
+  condition: []
+  action:
+  - service: timer.cancel
+    metadata: {}
+    data: {}
+    target:
+      entity_id: timer.espresso_machine
+  mode: single
+- id: '1709161306952'
+  alias: Remote volume up
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zha_event
+    event_data:
+      command: step
+      args:
+      - 0
+      - 30
+      - 9
+  condition: []
+  action:
+  - service: media_player.volume_up
+    metadata: {}
+    data: {}
+    target:
+      entity_id: media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1709162531931'
+  alias: Remote volume down
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zha_event
+    event_data:
+      command: step
+      args:
+      - 1
+      - 30
+      - 9
+  condition: []
+  action:
+  - service: media_player.volume_down
+    data: {}
+    target:
+      entity_id: media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1715099748036'
+  alias: Scene Lounge off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.lounge_scenes
+    to: 'Off'
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.lounge_off
+    metadata: {}
+  mode: single
+- id: '1715121959986'
+  alias: Bedroom chill select
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.bedroom_switch_scenes
+    to: Chill
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.bedroom_chill
+    metadata: {}
+  mode: single
+- id: '1715122078858'
+  alias: Bedroom off select
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.bedroom_switch_scenes
+    to: 'Off'
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.bedroom_off
+    metadata: {}
+  mode: single
+- id: '1717357876302'
+  alias: Kitchen Sensor Light
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.kitchen_motion_sensor
+      light_switch:
+        entity_id: light.kitchen_ceiling_light
+      include_light_control: []
+      include_dynamic_lighting: enable_sun_elevation_brightness
+      dynamic_lighting_min_brightness: 35
+      include_sun: sun_enabled
+- id: '1717626985013'
+  alias: Gas Leak Detected
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.shellygas_7c87cebcf166_gas
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.family
+    metadata: {}
+    data:
+      message: ⛽️ Gas leak detected in Kitchen
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
+- id: '1717627225592'
+  alias: Gas leak cleared in kitchen
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.shellygas_7c87cebcf166_gas
+    to: 'off'
+    from: 'on'
+  condition: []
+  action:
+  - service: notify.family
+    metadata: {}
+    data:
+      message: "\U0001F44D\U0001F3FB Gas leak cleared in Kitchen"
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
+- id: '1717875119282'
+  alias: Nest Doorbell > Input Boolean
+  description: ''
+  trigger:
+  - platform: device
+    device_id: ce48401c8d89f1391b9432705789f9ee
+    domain: nest
+    type: camera_motion
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.exterior_motion_detected
+    data: {}
+  mode: single
+- id: '1717875319925'
+  alias: Reset input boolean after exterior motion detected
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.exterior_motion_detected
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id:
+      - input_boolean.exterior_motion_detected
+    data: {}
+  mode: single
+- id: '1718047043129'
+  alias: HVAC - Turn on coil fans when boiler heat and water temp above
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ states(''sensor.heating_supply_temp'') | float > 100 }}'
+  condition:
+  - condition: template
+    value_template: '{{ as_timestamp(now()) - as_timestamp(states.switch.boiler_heat_switch_switch.last_changed)
+      < 1200}}'
+  action:
+  - service: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.heating_fans
+  mode: single
+- id: '1718052749285'
+  alias: Set Thermostat to Sleep Preset
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - schedule.sleep
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.someone_home
+    state: 'on'
+  action:
+  - service: climate.set_preset_mode
+    metadata: {}
+    data:
+      preset_mode: sleep
+    target:
+      entity_id: climate.main_thermostat
+  mode: single
+- id: '1718053000285'
+  alias: Set thermstat to home preset if wake up and people home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - schedule.sleep
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.someone_home
+    state: 'on'
+  action:
+  - service: climate.set_preset_mode
+    metadata: {}
+    data:
+      preset_mode: home
+    target:
+      entity_id: climate.main_thermostat
+  mode: single
+- id: '1718059196397'
+  alias: set thermostat away if no one at home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.someone_home
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition: []
+  action:
+  - service: climate.set_preset_mode
+    metadata: {}
+    data:
+      preset_mode: away
+    target:
+      entity_id: climate.main_thermostat
+  mode: single
+- id: '1718121322060'
+  alias: Turn off fans is heat supply temp low
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ states(''sensor.heating_supply_temp'') | float < 100 }}'
+  condition:
+  - condition: template
+    value_template: '{{ as_timestamp(now()) - as_timestamp(states.switch.boiler_heat_switch_switch.last_changed)
+      < 1200}}'
+  action:
+  - service: fan.turn_off
+    target:
+      entity_id:
+      - fan.heating_fans
+    data: {}
+  mode: single
+- id: '1718150840698'
+  alias: Philips remote volume up
+  description: ''
+  trigger:
+  - platform: event
+    event_type: philips_remote_step
+    event_data:
+      data:
+        step_mode: 1
+        step_size: 30
+        transition_time: 9
+        options_mask:
+        options_override:
+  - device_id: 68e6c02b0cce1fc9e458b72c967b23f1
+    domain: zha
+    platform: device
+    type: remote_button_double_press
+    subtype: dim_up
+  condition: []
+  action:
+  - service: media_player.volume_up
+    data: {}
+    target:
+      entity_id: media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1718220699557'
+  alias: Change Source in 2nd floor
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zha_event
+    event_data:
+      command: 'on'
+  condition: []
+  action:
+  - service: input_select.select_next
+    target:
+      entity_id: input_select.music_sources
+    data:
+      cycle: true
+  mode: single
+- id: '1718220851223'
+  alias: kexp input to script sync
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.music_sources
+    to: KEXP
+  condition: []
+  action:
+  - sequence:
+    - service: tts.cloud_say
+      metadata: {}
+      continue_on_error: true
+      data:
+        message: Now playing KEXP radio
+        options: {}
+        entity_id: media_player.2nd_floor_squeezelite
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 5
+        milliseconds: 0
+    - service: mass.play_media
+      metadata: {}
+      data:
+        media_id: KEXP
+        media_type: radio
+      target:
+        entity_id: media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1718221001771'
+  alias: input select kkup > to script
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.music_sources
+    to: KKUP
+  condition: []
+  action:
+  - sequence:
+    - service: tts.cloud_say
+      metadata: {}
+      continue_on_error: true
+      data:
+        message: Now playing KKUP radio
+        options: {}
+        entity_id: media_player.2nd_floor_squeezelite
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 4
+        milliseconds: 0
+    - service: mass.play_media
+      metadata: {}
+      data:
+        media_id: KKUP
+        media_type: radio
+      target:
+        entity_id:
+        - media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1718221195649'
+  alias: input select > script for groove salad
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.music_sources
+    to: Groove Salad
+  condition: []
+  action:
+  - sequence:
+    - service: tts.cloud_say
+      metadata: {}
+      continue_on_error: true
+      data:
+        entity_id: media_player.2nd_floor_squeezelite
+        message: Now playing Groove Salad from soma FM
+        options: {}
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 5
+        milliseconds: 0
+    - service: mass.play_media
+      metadata: {}
+      data:
+        media_id: Groove Salad Classic
+        media_type: radio
+      target:
+        entity_id: media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1718223393608'
+  alias: remote plaay/ pause
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zha_event
+    event_data:
+      command: off_with_effect
+  condition: []
+  action:
+  - service: media_player.media_play_pause
+    data: {}
+    target:
+      entity_id: media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1718224552708'
+  alias: 2nd floor off via input select
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.2nd_floor_scenes
+    to: 'Off'
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.2nd_floor_off
+    metadata: {}
+  mode: single
+- id: '1718472901595'
+  alias: Alternate Doorcode
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_notification
+    event_data:
+      label: Access Control
+      type: 6
+      event: 6
+      event_label: Keypad unlock operation
+      parameters:
+        userId: 2
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.garage
+    state: armed_home
+  action:
+  - sequence:
+    - service: alarm_control_panel.alarm_disarm
+      data:
+        code: '2483'
+      target:
+        entity_id: alarm_control_panel.garage
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - condition: state
+      entity_id: alarm_control_panel.garage
+      state: disarmed
+    - service: cover.toggle
+      metadata: {}
+      data: {}
+      target:
+        entity_id: cover.garage_door
+    - service: lock.unlock
+      metadata: {}
+      data: {}
+      target:
+        entity_id: lock.garage_door_deadbolt_lock
+    - service: notify.family
+      data:
+        message: alternate garage door code used
+  mode: single
+- id: '1718494306870'
+  alias: Play Saegey Test Home playlist in living room
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.music_sources
+    to: Saegey Test Home
+  condition: []
+  action:
+  - sequence:
+    - service: tts.cloud_say
+      metadata: {}
+      continue_on_error: true
+      data:
+        entity_id: media_player.2nd_floor_squeezelite
+        message: Now playing Saegey Test Home on Apple Music
+        options: {}
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 5
+        milliseconds: 0
+    - service: media_player.shuffle_set
+      data:
+        shuffle: true
+      target:
+        entity_id:
+        - media_player.2nd_floor_squeezelite
+    - service: mass.play_media
+      metadata: {}
+      data:
+        media_id: Saegey Test Home
+        media_type: playlist
+      target:
+        entity_id:
+        - media_player.2nd_floor_squeezelite
+  mode: single
+- id: '1718496637113'
+  alias: Turn off bathroom fan after 20 min
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.lounge_bathroom
+    to: 'off'
+  - platform: state
+    entity_id:
+    - fan.lounge_bathroom_fan
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: light.lounge_bathroom
+    state: 'off'
+  action:
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - service: fan.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.lounge_bathroom_fan
+  mode: single
+- id: '1718500567439'
+  alias: Notify When on Battery Power
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.myups_status_data
+    to: OB DISCHRG
+  action:
+  - service: notify.family
+    data:
+      message: "Home Assistant is on battery power! \U0001F6A8\U0001FAAB"
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+- id: '1718501045877'
+  alias: Update Battery Status Every 20 Minutes if discharging
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /20
+  condition:
+  - condition: state
+    entity_id: sensor.myups_status_data
+    state: OL DISCHRG
+  - condition: state
+    entity_id: sensor.myups_status_data
+    state: OB DISCHRG
+  action:
+  - service: notify.family
+    data:
+      message: 'Battery status: {{ states(''sensor.myups_battery_charge'') }}%
+
+        '
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+- id: '1718576006193'
+  alias: Smoke alarm has been triggered
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.fire_smoke_alarm_input
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.family
+    metadata: {}
+    data:
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+      message: "Smoke Alarm has been triggered!! \U0001F525\U0001F4A8\U0001F6A8"
+  mode: single
+- id: '1718576051395'
+  alias: Smoke alarm has cleared
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.fire_smoke_alarm_input
+    to: 'off'
+    from: 'on'
+  condition: []
+  action:
+  - service: notify.family
+    metadata: {}
+    data:
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+      message: Smoke Alarm has cleared ✅
+  mode: single
+- id: '1718654460899'
+  alias: Front Light based on motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.exterior_motion_detected
+    to: 'on'
+    enabled: true
+  condition:
+  - condition: and
+    conditions:
+    - alias: Is 1 hr after sunset or 1hr before sunrise
+      condition: template
+      value_template: '{% set now = states(''sensor.time'').split('':'') %}
+
+        {% set now = now[0]|int * 60 + now[1]|int %}
+
+        {# {{ now }} #}
+
+        {# {% set now = 900 %} #}
+
+        {% set sunset = (state_attr(''sun.sun'', ''next_setting'') | as_datetime +
+        timedelta(hours=1)).strftime(''%H:%M'').split('':'') %}
+
+        {% set sunset = sunset[0]|int * 60 + sunset[1]|int %}
+
+        {% set sunrise = (state_attr(''sun.sun'', ''next_rising'') | as_datetime -
+        timedelta(hours=1)).strftime(''%H:%M'').split('':'') %}
+
+        {% set sunrise = sunrise[0]|int * 60 + sunrise[1]|int %}
+
+        {# now {{ now }} sunset {{ sunset }} sunrise {{ sunrise }} #}
+
+        {% if sunset <= now <= sunrise %}
+
+        False
+
+        {% else %}
+
+        True
+
+        {% endif %}'
+    - condition: state
+      entity_id: input_boolean.disable_front_motion
+      state: 'off'
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.exterior_front_light_2
+    enabled: true
+    data: {}
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disable_front_motion
+    enabled: true
+    data: {}
+  mode: single
+- id: Exterior Light Off - Enable Light Automation
+  alias: Exterior light off disables front motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.exterior_front_light_2
+    to: 'off'
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disable_front_motion
+    data: {}
+- id: Exterior Light Off - Enable Light Automation
+  alias: disable front motion when light turns off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.exterior_front_light_2
+    to: 'off'
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disable_front_motion
+    data: {}
+- id: Exterior Light Off - Enable Light Automation
+  alias: disable front motion when light turns off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.exterior_front_light_2
+    to: 'off'
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disable_front_motion
+    data: {}
+  mode: single
+- id: Exterior Light Off - Enable Light Automation
+  alias: disable front motion when light turns off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.exterior_front_light_2
+    to: 'off'
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.disable_front_motion
+  mode: single
+- id: '1718655522715'
+  alias: exterior front disable toggle
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.disable_front_motion
+    to: 'on'
+  condition: []
+  action:
+  - sequence:
+    - delay:
+        hours: 0
+        minutes: 5
+        seconds: 0
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: input_boolean.disable_front_motion
+  mode: single
+- id: '1718656053602'
+  alias: Dim bathroom lights during sleep
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: e2254cd276c0c4a65d87d8886ec289bc
+    entity_id: 9982d33702a7bd2505f6f69ef28eb840
+    domain: light
+  condition:
+  - condition: state
+    entity_id: schedule.sleep
+    state: 'off'
+  action:
+  - service: light.turn_on
+    metadata: {}
+    data:
+      brightness_pct: 20
+    target:
+      entity_id: light.lounge_bathroom
+  mode: single
+- id: '1718664248126'
+  alias: Lounge Double click for light and fans
+  description: ''
+  trigger:
+  - platform: device
+    device_id: e2254cd276c0c4a65d87d8886ec289bc
+    domain: zwave_js
+    type: event.value_notification.central_scene
+    property: scene
+    property_key: '002'
+    endpoint: 0
+    command_class: 91
+    subtype: Endpoint 0 Scene 002
+    value: 3
+  condition: []
+  action:
+  - service: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.lounge_bathroom_fan
+  - service: light.turn_on
+    metadata: {}
+    data:
+      brightness_pct: 70
+      transition: 1
+    target:
+      entity_id: light.lounge_bathroom
+  mode: single
+- id: '1718734078919'
+  alias: Hall light double click on
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id:
+      - YOUR_NODE_ID
+      scene_id: 1
+      scene_value_id: 2
+  - platform: device
+    device_id: 01e74b9ee732198cce7a645e205e6a45
+    domain: zwave_js
+    type: event.value_notification.central_scene
+    property: scene
+    property_key: '001'
+    endpoint: 0
+    command_class: 91
+    subtype: Endpoint 0 Scene 001
+    value: 3
+  condition: []
+  action:
+  - service: input_select.select_next
+    target:
+      entity_id: input_select.2nd_floor_scenes
+    data:
+      cycle: true
+  mode: single
+- id: '1718734400590'
+  alias: Hall light switch double click off
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 01e74b9ee732198cce7a645e205e6a45
+    domain: zwave_js
+    type: event.value_notification.central_scene
+    property: scene
+    property_key: '002'
+    endpoint: 0
+    command_class: 91
+    subtype: Endpoint 0 Scene 002
+    value: 3
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.2nd_floor_off
+    data:
+      transition: 2
+  mode: single
+- id: '1718734653708'
+  alias: Double click on volume up
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 9e3e358da22ede88cd075a505ae70173
+    domain: zwave_js
+    type: event.value_notification.central_scene
+    property: scene
+    property_key: '001'
+    endpoint: 0
+    command_class: 91
+    subtype: Endpoint 0 Scene 001
+    value: 3
+  condition: []
+  action:
+  - service: media_player.volume_up
+    metadata: {}
+    data: {}
+    target:
+      entity_id: media_player.2nd_floor
+  mode: single
+- id: '1718734719063'
+  alias: stair light switch double click off volume down
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 9e3e358da22ede88cd075a505ae70173
+    domain: zwave_js
+    type: event.value_notification.central_scene
+    property: scene
+    property_key: '002'
+    endpoint: 0
+    command_class: 91
+    subtype: Endpoint 0 Scene 002
+    value: 3
+  condition: []
+  action:
+  - service: media_player.volume_down
+    target:
+      entity_id: media_player.2nd_floor
+    data: {}
+  mode: single
+- id: '1718749275275'
+  alias: Turn off bedroom fan after 20 min
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.bedroom_bathroom_light
+    to: 'off'
+  - platform: state
+    entity_id:
+    - fan.bedroom_bathroom_fan_switch
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: light.bedroom_bathroom_light
+    state: 'off'
+  action:
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - service: fan.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.bedroom_bathroom_fan_switch
+  mode: single
+- id: '1718749784636'
+  alias: Bedroom double click for fan and light
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 1f47bd27ec3ece15196f2ad554542d85
+    domain: zwave_js
+    type: event.value_notification.central_scene
+    property: scene
+    property_key: '002'
+    endpoint: 0
+    command_class: 91
+    subtype: Endpoint 0 Scene 002
+    value: 3
+  condition: []
+  action:
+  - service: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.bedroom_bathroom_fan_switch
+  - service: light.turn_on
+    metadata: {}
+    data:
+      brightness_pct: 50
+      transition: 0.5
+    target:
+      entity_id: light.bedroom_bathroom_light
+  mode: single
+- id: '1718821897960'
+  alias: Alternate door code when master alarm state is "armed_away"
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_notification
+    event_data:
+      label: Access Control
+      type: 6
+      event: 6
+      event_label: Keypad unlock operation
+      parameters:
+        userId: 2
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.master
+    state: armed_away
+  action:
+  - sequence:
+    - service: alarm_control_panel.alarm_disarm
+      data:
+        code: '2483'
+      target:
+        entity_id: alarm_control_panel.master
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+    - condition: state
+      entity_id: alarm_control_panel.master
+      state: disarmed
+    - service: cover.toggle
+      metadata: {}
+      data: {}
+      target:
+        entity_id: cover.garage_door
+    - service: lock.unlock
+      metadata: {}
+      data: {}
+      target:
+        entity_id: lock.garage_door_deadbolt_lock
+    - service: notify.family
+      data:
+        message: alternate 1 garage door code used
+  mode: single
+- id: '1719425880822'
+  alias: Make ice when sleeping
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - schedule.sleep
+    to: 'on'
+    from: 'off'
+  condition: []
+  action:
+  - service: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.bosch_b36ct81ens_68a40ea25656_refrigeration_common_setting_dispenser_enabled
+  mode: single
+- id: '1719425931981'
+  alias: Disable ice maker when awake
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - schedule.sleep
+    to: 'off'
+    from: 'on'
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id:
+      - switch.bosch_b36ct81ens_68a40ea25656_refrigeration_common_setting_dispenser_enabled
+    data: {}
+  mode: single
+- id: '1719684356353'
+  alias: Gym Fan Auto On via HRM
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - device_tracker.tickr_bdd9
+    from: not_home
+    to: home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: fan.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: fan.lasko_fan_switch
+  mode: single
+- id: '1719684412562'
+  alias: Gym Auto Fan Off via HRM
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - device_tracker.tickr_bdd9
+    from: home
+    to: not_home
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition: []
+  action:
+  - service: fan.turn_off
+    target:
+      entity_id:
+      - fan.lasko_fan_switch
+    data: {}
+  mode: single
+- id: '1719853227912'
+  alias: Fence gate open alert
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.fence_gate_opening
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.family
+    data:
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+      message: "\U0001F6AAFence gate is open!"
+      title: Fence gate is open!
+  mode: single
+- id: '1719853460245'
+  alias: Notify - Exterior Rear Door
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.rear_door
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    from: 'off'
+  condition: []
+  action:
+  - service: notify.family
+    data:
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+      message: "\U0001F6AAExterior rear door is open!"
+      title: Exterior rear door is open!
+  mode: single
+- id: '1719881452515'
+  alias: Doorbell 2nd floor notification when nothing playing
+  description: ''
+  trigger:
+  - platform: device
+    device_id: ce48401c8d89f1391b9432705789f9ee
+    domain: nest
+    type: doorbell_chime
+  condition:
+  - condition: state
+    entity_id: media_player.2nd_floor_squeezelite
+    state: paused
+  - condition: state
+    entity_id: media_player.2nd_floor_squeezelite
+    state: idle
+  - condition: state
+    entity_id: media_player.2nd_floor_squeezelite
+    state: 'off'
+  action:
+  - service: notify.family
+    data:
+      message: "\U0001F514 Door bell was rung!"
+  - service: mqtt.publish
+    data:
+      topic: alarmpanel/command
+      payload_template: '{"speak": "The doorbell was just rang!"}
+
+        '
+  - sequence:
+    - service: tts.speak
+      metadata: {}
+      data:
+        cache: true
+        media_player_entity_id: media_player.2nd_floor_squeezelite
+        message: doorbell was rang
+      target:
+        entity_id: tts.home_assistant_cloud
+      continue_on_error: true
+  mode: single
+- id: '1719882205632'
+  alias: Doorbell notification in lounge stereo when nothing playing
+  description: ''
+  trigger:
+  - platform: device
+    device_id: ce48401c8d89f1391b9432705789f9ee
+    domain: nest
+    type: doorbell_chime
+  condition:
+  - condition: state
+    entity_id: media_player.squeezeplay_48_65_ee_16_1f_b8
+    state: paused
+  - condition: state
+    entity_id: media_player.squeezeplay_48_65_ee_16_1f_b8
+    state: idle
+  - condition: state
+    entity_id: media_player.squeezeplay_48_65_ee_16_1f_b8
+    state: 'off'
+  action:
+  - sequence:
+    - service: tts.speak
+      metadata: {}
+      data:
+        cache: true
+        media_player_entity_id: media_player.squeezeplay_48_65_ee_16_1f_b8
+        message: doorbell was rang
+      target:
+        entity_id: tts.home_assistant_cloud
+      continue_on_error: true
+  mode: single
+- id: '1719885113039'
+  alias: Assist turns on in lounge
+  description: ''
+  trigger:
+  - type: turned_on
+    platform: device
+    device_id: abeadd215730413adcbbbb441560fa3c
+    entity_id: 84d29333d5c66433b0acf2776d364816
+    domain: binary_sensor
+  condition: []
+  action:
+  - sequence:
+    - service: scene.create
+      metadata: {}
+      data:
+        scene_id: before_assistant
+        snapshot_entities:
+        - media_player.lounge_stereo
+    - service: media_player.volume_set
+      metadata: {}
+      data:
+        volume_level: 0.41
+  mode: single
+- id: '1719958204375'
+  alias: Daily Full Backup
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00:00
+  condition: []
+  action:
+  - service: hassio.backup_full
+    metadata: {}
+    data:
+      compressed: true
+      homeassistant_exclude_database: false
+      location: Backup
+  mode: single
+- id: '1720976285282'
+  alias: Arrive home by car
+  description: ''
+  trigger:
+  - event_type: ios.action_fired
+    platform: event
+    event_data:
+      actionID: 8E112AA5-B575-45B6-A4DD-CE4FA1787B8C
+  condition: []
+  action:
+  - sequence:
+    - service: alarm_control_panel.alarm_disarm
+      metadata: {}
+      data:
+        code: '2483'
+      target:
+        entity_id: alarm_control_panel.master
+    - service: cover.open_cover
+      metadata: {}
+      data: {}
+      target:
+        entity_id: cover.garage_door
+    - service: lock.unlock
+      metadata: {}
+      data:
+        code: '4202483'
+      target:
+        entity_id: lock.garage_door_deadbolt_lock
+  mode: single
+- id: '1720990719416'
+  alias: Alert - sensor unavailable
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.rear_door
+    - binary_sensor.front_door
+    - binary_sensor.2nd_rear_door
+    - binary_sensor.master_bedroom_door
+    - binary_sensor.garage_overhead_door_sensor
+    - binary_sensor.fence_gate_opening
+    to: unknown
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  - platform: state
+    entity_id:
+    - binary_sensor.rear_door
+    - binary_sensor.front_door
+    - binary_sensor.2nd_rear_door
+    - binary_sensor.master_bedroom_door
+    - binary_sensor.garage_overhead_door_sensor
+    - binary_sensor.fence_gate_opening
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.family
+    metadata: {}
+    data:
+      message: Sensor {{ trigger.to_state.attributes.friendly_name }} has changed
+        to {{ trigger.to_state.state }}.
+      title: Sensor is unavailable
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
+- id: '1721078897401'
+  alias: Play Music on Music Assistant
+  description: ''
+  trigger:
+  - platform: conversation
+    command: Play {query}
+  condition: []
+  action:
+  - service: conversation.process
+    data:
+      agent_id: 01J2W4CZQ77C2B9HGMQTD4KN5W
+      text: '{{trigger.slots.query}}'
+    response_variable: response_from_ai
+  - service: mass.play_media
+    data: '{{response_from_ai.response.speech.plain.speech|from_json}}'
+    target:
+      entity_id: media_player.squeezeplay_48_65_ee_16_1f_b8
+  mode: single
+- id: '1721245904339'
+  alias: Power on interface and speakers when playing
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.squeezeplay_ac_de_48_00_11_22
+    to: playing
+  - platform: state
+    entity_id:
+    - media_player.lounge_stereo
+    to: playing
+  condition:
+  - condition: state
+    entity_id: switch.lounge_stereo_power_switch
+    state: 'off'
+  action:
+  - type: turn_on
+    device_id: 0bc9c81ac974176e0ef9877c039a2d8c
+    entity_id: 44780a874b065a842d0ef45702e4fffd
+    domain: switch
+  mode: single
+- id: '1721246188796'
+  alias: Turn off lounge stereo speakers and interface if no music for 1 hr
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.squeezeplay_ac_de_48_00_11_22
+    to: idle
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: media_player.lounge_stereo
+      state: idle
+    - condition: state
+      entity_id: media_player.lounge_stereo
+      state: 'off'
+  action:
+  - type: turn_off
+    device_id: 0bc9c81ac974176e0ef9877c039a2d8c
+    entity_id: 44780a874b065a842d0ef45702e4fffd
+    domain: switch
+  mode: single
+- id: '1721343791275'
+  alias: stereo autmatin
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.squeezeplay_48_65_ee_16_1f_b8
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: media_player.lounge_stereo
+      state: idle
+    - condition: state
+      entity_id: media_player.lounge_stereo
+      state: 'off'
+  action:
+  - type: turn_off
+    device_id: 0bc9c81ac974176e0ef9877c039a2d8c
+    entity_id: 44780a874b065a842d0ef45702e4fffd
+    domain: switch
+  mode: single

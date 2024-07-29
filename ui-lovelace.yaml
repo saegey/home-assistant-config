@@ -1,0 +1,306 @@
+button_card_templates:
+  header:
+    styles:
+      card:
+        - height: 30px
+    color_type: label-card
+    color: 'var(--secondary-background-color)'
+  
+  header_clickable:
+    color_type: card
+    color: 'var(--secondary-background-color)'
+    show_icon: false
+    styles:
+      card:
+        - height: 30px
+  
+  header_light:
+    color_type: card
+    color: auto-no-temperature
+    show_icon: false
+    hold_action:
+      action: more-info
+    styles:
+      card:
+        - height: 30px
+    state:
+      - color: 'var(--secondary-background-color)'
+        value: 'off'
+  
+  esp:
+    styles:
+      card:
+        - height: 35px
+
+    color_type: icon
+    show_name: false
+    show_icon: false
+    show_state: true
+    show_last_changed: true
+  
+  people_state:
+    show_state: true
+    show_icon: true
+    show_name: true
+    show_entity_picture: true
+    tap_action:
+      action: more-info
+    # styles:
+    #   card:
+    #     - box-shadow: unset
+    style: |
+      img {
+        width: 100% !important;
+      }
+      #img-cell {
+        border-radius: 100px;
+        height: 100px !important;
+        width: 100px !important;
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+      }
+      #state {
+        padding-top: 5px;
+        font-size: 13px;
+        margin-bottom: 10px !important;
+      }
+  
+  scene_button:
+    # aspect_ratio: 2/1
+    show_icon: true
+    show_name: true
+    styles:
+      icon:
+        - height: 30px
+        - margin-top: 5px
+      name:
+        - font-size: 13px
+        - margin-bottom: 5px;
+    tap_action: 
+      action: call-service
+      service: scene.turn_on
+      service_data:
+        entity_id: entity
+    style: |
+      ha-card {
+        box-shadow: unset;
+        border-bottom: 1px solid var(--title-border-color);
+      } 
+
+  people_button:
+    show_state: true
+    show_icon: false
+    show_name: false
+    size: 16px
+    tap_action:
+      action: more-info
+    style: |
+      #card {
+        margin-top: 10px;
+      }
+    styles:
+      card:
+        - font-size: 13px
+        - box-shadow: unset
+
+  dash_button:
+    size: 25px
+    color_type: card
+    tap_action:
+      action: more-info
+    hold_action:
+      action: toggle
+    styles:
+      card:
+        - height: 70px
+        - font-size: 11px
+        - background: >
+            [[[
+            if (entity.state == "on") return "var(--accent-color)";
+            else return "var(--paper-card-background-color)"; 
+            ]]]
+    style: !include lovelace/includes/style.yaml
+
+  timer:
+    color_type: card
+    color: 'var(--custom_motion_off)'
+    size: 25px
+    show_icon: false
+    show_name: false
+    show_state: true
+    styles:
+      card:
+        - height: 20px
+        - font-size: 11px
+        - font-weight: bold
+
+title: Townhaus
+# views: !include_dir_list lovelace/views/
+views:
+- title: Main
+  icon: mdi:home-assistant
+  path: home
+
+  cards:
+  - type: custom:spu-trash-collection-card
+    collection_days:
+      garbage: sensor.garbage_collection
+      compost: sensor.compost_collection
+      recycling: sensor.recycling_collection
+      
+  - type: glance
+    title: Quick Links
+    # style: !include ../includes/style_entities_card.yaml
+    entities:
+      - entity: group.doors
+        icon: mdi:door
+
+      - entity: alarm_control_panel.townhouse_alarm
+        icon: mdi:security
+        name: Alarm
+        # tap_action:
+        #   action: navigate
+        #   navigation_path: /lovelace/4/
+
+      - entity: group.interior_lights
+        icon: mdi:lightbulb
+        name: Lights
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace/1
+
+      - entity: group.motion_sensors
+        name: Motion
+        icon: mdi:motion-sensor
+
+      - entity: cover.garage_door
+        name: Garage
+        icon: mdi:garage
+
+          
+  - type: entities
+    entities:
+
+      - type: custom:button-card
+        template: people_state
+        entity: person.adam
+        entity_picture: /local/adam.jpg
+      - entity: sensor.adam_location_history
+        name: Home
+        # icon: false
+      - entity: sensor.adam_iphone_11_battery
+        name: Phone
+      - entity: sensor.adam_iphone_steps
+        name: Steps
+      - entity: sensor.adam_iphone_distance
+        name: Distance
+
+    footer:
+      type: graph
+      entity: sensor.adam_iphone_11_battery
+      hours_to_show: 24
+      detail: 1
+
+  - type: entities
+    entities:
+      - type: custom:button-card
+        template: people_state
+        entity: person.scarlett
+        entity_picture: /local/scarlett.jpg
+      - entity: sensor.scarlett_location_history
+        name: Home
+        # icon: false
+      - entity: sensor.scarlett_iphone_battery_level
+        name: Phone
+      - entity: sensor.scarlett_iphone_steps
+        name: Steps
+      - entity: sensor.scarlett_iphone_distance
+        name: Distance
+
+  - type: vertical-stack
+    cards:
+      - type: weather-forecast
+        entity: weather.dark_sky
+        name: Home
+      
+      - type: entities
+        title: Weather Info
+        entities:
+          - entity: sensor.dark_sky_uv_index
+            name: UV Index
+          - entity: sensor.dark_sky_wind_speed
+            name: Wind Speed
+          - entity: sensor.dark_sky_wind_bearing
+            name: Wind Direction
+          - entity: sensor.moon
+            name: Moon Phase
+
+  # - type: vertical-stack
+  #   cards:
+
+      # - !include
+      #   - ../includes/titles.yaml
+      #   - title: Temperature
+      
+      # - !include
+      #   - ../includes/graphs.yaml
+      #   - entity: sensor.inside_temperature
+      #     name: Temperature
+      #     icon: mdi:thermometer
+      #     line_color: var(--custom_graph_color_1)
+
+  # - type: vertical-stack
+  #   cards:
+  #     # - !include
+  #     #   - ../includes/titles.yaml
+  #     #   - title: Illuminance
+
+  #     - !include
+  #       - ../includes/graphs.yaml
+  #       - entity: sensor.inside_illuminance
+  #         name: Illuminance
+  #         icon: mdi:white-balance-sunny
+  #         line_color: var(--custom_graph_color_2)
+
+  # - type: vertical-stack
+  #   cards:
+      
+  #     # - !include
+  #     #   - ../includes/titles.yaml
+  #     #   - title: Humidity
+
+  #     - !include
+  #       - ../includes/graphs.yaml
+  #       - entity: sensor.inside_humidity
+  #         name: Humidity
+  #         icon: mdi:water-percent
+  #         line_color: var(--custom_graph_color_3)
+
+  - type: vertical-stack
+    cards:
+        
+      - type: conditional
+        conditions:
+          - entity: media_player.living_room
+            state: 'playing'
+          - entity: media_player.smoking_lounge
+            state: 'playing'
+        card:
+          type: markdown
+          content: Media Players
+
+      - type: conditional
+        conditions:
+        - entity: media_player.living_room
+          state: 'playing'
+        card:
+          type: media-control
+          entity: media_player.living_room
+
+      - type: conditional
+        conditions:
+        - entity: media_player.smoking_lounge
+          state: 'playing'
+        card:
+          type: media-control
+          entity: media_player.smoking_lounge

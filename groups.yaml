@@ -1,0 +1,55 @@
+# security_sensors:
+#   name: Security Sensors
+#   unique_id: security_sensors
+#   entities:
+#     - binary_sensor.front_door
+#     - binary_sensor.rear_door
+#     - binary_sensor.garage_door
+#     - binary_sensor.2nd_rear_door
+#     - binary_sensor.master_bedroom_door
+#     - binary_sensor.garage_overhead_door_sensor
+
+# sirens:
+#   name: Sirens
+#   unique_id: alarm_sirens
+#   entities:
+#     - switch.siren
+#     - switch.garage_siren_relay_switch
+
+# doors:
+#   name: Doors
+#   unique_id: doors_sensor
+#   entities:
+#     - binary_sensor.front_door
+#     - binary_sensor.garage_door
+#     - binary_sensor.rear_door
+#     - binary_sensor.2nd_rear_door
+#     - binary_sensor.master_bedroom_door
+#     - binary_sensor.garage_door_sensor
+
+# exterior_lights:
+#   name: Exterior Lights
+#   unique_id: exterior_lights
+#   entities:
+#     - light.exterior_front_light
+#     - light.exterior_rear_light
+
+# interior_lights:
+#   name: Interior Lights
+#   unique_id: interior_lights
+#   entities:
+#     - light.foyer_light
+#     - light.hallway_light
+#     - light.cilinder_light
+#     - light.living_room_salt_lamp
+#     - light.living_room_floor_lamp
+#     - light.living_room_floor_lamp_small
+#     - light.dining_ceiling_light
+#     - light.kitchen_ceiling_light
+#     - light.stair_lights
+#     - light.lounge_left_light
+#     - light.lounge_right_light
+#     - light.lounge_wall_light
+#     - light.desk_lamp
+#     - light.bedroom_left_light
+#     - light.bedroom_right_light

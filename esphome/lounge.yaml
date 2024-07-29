@@ -1,0 +1,65 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: lounge
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include components/core.yaml
+
+i2c:
+  scan: True
+
+light:
+  - platform: rgb
+    name: "Lounge RGB Led"
+    red: output_component_red
+    green: output_component_green
+    blue: output_component_blue
+    restore_mode: ALWAYS_OFF
+
+output:
+  - platform: esp8266_pwm
+    id: output_component_red
+    pin: D6
+    
+  - platform: esp8266_pwm
+    id: output_component_green
+    pin: D7
+    
+  - platform: esp8266_pwm
+    id: output_component_blue
+    pin: D8
+
+sensor:
+  - platform: dht
+    pin: D3
+    temperature:
+      name: "Lounge Room Temperature"
+    humidity:
+      name: "Lounge Room Humidity"
+    update_interval: 60s
+    model: DHT11
+    
+  - platform: bh1750
+    name: "Lounge Illuminance"
+    address: 0x23
+    update_interval: 60s
+    
+  - platform: uptime
+    name: "Lounge Uptime"
+    
+  - platform: wifi_signal
+    name: "Lounge WiFi Signal"
+    update_interval: 60s
+
+binary_sensor:
+  - platform: gpio
+    pin: D5
+    name: "Lounge Motion Sensor"
+    device_class: motion
+
+switch:
+  - platform: restart
+    name: "Lounge Restart"

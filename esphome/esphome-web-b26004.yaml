@@ -1,0 +1,47 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: boiler
+  name_add_mac_suffix: false
+  project:
+    name: esphome.web
+    version: '1.0'
+
+<<: !include components/core.yaml
+
+esp8266:
+  board: nodemcuv2
+
+dallas:
+  - pin: D2
+    id: hub_1
+  - pin: D1
+    id: hub_2
+  - pin: D5
+    id: hub_3
+
+sensor:
+  - platform: dallas
+    dallas_id: hub_1
+    address: 0x6f3ce1d443de8f28
+    name: "Temperature #1"
+  - platform: dallas
+    dallas_id: hub_2
+    address: 0xd13ce1d443388428
+    name: "Temperature #2"
+  - platform: dallas
+    dallas_id: hub_3
+    address: 0x253ce1d443a08828
+    name: "Temperature #3"
+
+
+    
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: D7  # change to the GPIO pin you're using
+      mode: INPUT  # Configure as standard input
+    name: "Combi Boiler Air Handler State"
+    device_class: power  # Optional, helps categorize the sensor in Home Assistant
