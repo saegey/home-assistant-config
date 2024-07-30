@@ -10,6 +10,8 @@
 !scripts/
 !esphome/
 !esphome/components
+!custom_components/
+!blueprints/
 
 ._*
 
