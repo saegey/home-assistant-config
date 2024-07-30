@@ -36,83 +36,51 @@ device_tracker:
     track_battery: true
     track_battery_interval: 3600
 
-mqtt:
-  sensor:
-    - state_topic: "picoreplayer/cpu/temperature"
-      name: "PiCorePlayer CPU Temperature"
-      unit_of_measurement: "°C"
-      unique_id: picoreplayer_cpu_temp
+# mqtt:
+#   sensor:
+#     - state_topic: "picoreplayer/cpu/temperature"
+#       name: "PiCorePlayer CPU Temperature"
+#       unit_of_measurement: "°C"
+#       unique_id: picoreplayer_cpu_temp
 
-    - state_topic: "picoreplayer/cpu/usage"
-      name: "PiCorePlayer CPU Usage"
-      unit_of_measurement: "%"
-      value_template: "{{ value | float }}"
-      unique_id: picoreplayer_cpu_usage
+#     - state_topic: "picoreplayer/cpu/usage"
+#       name: "PiCorePlayer CPU Usage"
+#       unit_of_measurement: "%"
+#       value_template: "{{ value | float }}"
+#       unique_id: picoreplayer_cpu_usage
 
-    - state_topic: "picoreplayer/memory/usage"
-      name: "PiCorePlayer Memory Usage"
-      unit_of_measurement: "%"
-      unique_id: picoreplayer_mem_usage
+#     - state_topic: "picoreplayer/memory/usage"
+#       name: "PiCorePlayer Memory Usage"
+#       unit_of_measurement: "%"
+#       unique_id: picoreplayer_mem_usage
 
-    - state_topic: "pinas/cpu/temperature"
-      name: "PiNas CPU Temperature"
-      unit_of_measurement: "°C"
-      unique_id: pinas_cpu_temp
+#     - state_topic: "pinas/cpu/temperature"
+#       name: "PiNas CPU Temperature"
+#       unit_of_measurement: "°C"
+#       unique_id: pinas_cpu_temp
 
-    - state_topic: "pinas/cpu/usage"
-      name: "PiNas CPU Usage"
-      unit_of_measurement: "%"
-      value_template: "{{ value | float }}"
-      unique_id: pinas_cpu_usage
+#     - state_topic: "pinas/cpu/usage"
+#       name: "PiNas CPU Usage"
+#       unit_of_measurement: "%"
+#       value_template: "{{ value | float }}"
+#       unique_id: pinas_cpu_usage
 
-    - state_topic: "pinas/memory/usage"
-      name: "PiNas Memory Usage"
-      unit_of_measurement: "%"
-      unique_id: pinas_mem_usage
+#     - state_topic: "pinas/memory/usage"
+#       name: "PiNas Memory Usage"
+#       unit_of_measurement: "%"
+#       unique_id: pinas_mem_usage
 
-    - state_topic: "pinas/disk/usage"
-      name: "PiNas Disk Usage"
-      unit_of_measurement: "%"
-      value_template: "{{ value | float }}"
-      unique_id: pinas_disk_usage
+#     - state_topic: "pinas/disk/usage"
+#       name: "PiNas Disk Usage"
+#       unit_of_measurement: "%"
+#       value_template: "{{ value | float }}"
+#       unique_id: pinas_disk_usage
 
-    - state_topic: "pinas/disk-usb/usage"
-      name: "PiNas USB Disk Usage"
-      unit_of_measurement: "%"
-      value_template: "{{ value | float }}"
-      unique_id: pinas_usb-disk_usage
-
-konnected:
-  access_token: supas3cur3
-  api_host: http://192.168.2.91:8123
-  devices:
-    # Alarm Panel
-    - id: 98f4abb25e12
-      host: 192.168.2.77
-      port: 19689
-      discovery: false
-      binary_sensors:
-        - zone: 1
-          type: door
-          name: "Front Exterior Door"
-        - zone: 2
-          type: door
-          name: "Rear Exterior Door"
-        - zone: 3
-          type: door
-          name: "Garage Interior Door"
-        - zone: 4
-          type: motion
-          name: "2nd Motion Detector"
-        - zone: 5
-          type: door
-          name: "Second Floor Rear Door"
-        - zone: 6
-          type: door
-          name: "Master Bedroom Door"
-      switches:
-        - zone: out
-          name: Siren
+#     - state_topic: "pinas/disk-usb/usage"
+#       name: "PiNas USB Disk Usage"
+#       unit_of_measurement: "%"
+#       value_template: "{{ value | float }}"
+#       unique_id: pinas_usb-disk_usage
 
 cover:
   - platform: template

@@ -1,0 +1,17 @@
+substitutions:
+  name: konnected-b25e12
+  friendly_name: Alarm Panel
+packages:
+  konnected.alarm-panel-esp8266: github://konnected-io/konnected-esphome/alarm-panel-esp8266.yaml@master
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: !secret alarm_encrypt
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
